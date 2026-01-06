@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helpdesk Statistics Tool</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl font-bold text-slate-800">Helpdesk Data Insights</h1>
+            <p class="text-slate-500 mt-2">Upload your Current and Archive CSVs to compare performance.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">1. Current Helpdesk CSV</label>
+                <input type="file" id="currentFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">2. Archive Helpdesk CSV</label>
+                <input type="file" id="archiveFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"/>
+            </div>
+        </div>
+
+        <div class="text-center mb-10">
+            <button onclick="processData()" class="bg-slate-800 text-white px-8 py-3 rounded-lg font-bold hover:bg-slate-700 transition">Analyze Statistics</button>
+        </div>
+
+        <div id="dashboard" class="hidden">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
+                    <p class="text-sm text-gray-500 uppercase font-bold">Total Unique Tickets</p>
+                    <p id="totalCount" class="text-3xl font-bold text-gray-800">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-emerald-500">
+                    <p class="text-sm text-gray-500 uppercase font-bold">Current Period</p>
+                    <p id="currentCount" class="text-3xl font-bold text-gray-800">0</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-orange-500">
+                    <p class="text-sm text-gray-500 uppercase font-bold">Archive Period</p>
+                    <p id="archiveCount" class="text-3xl font-bold text-gray-800">0</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="font-bold mb-4 text-gray-700">Volume Comparison</h3>
+                    <canvas id="volumeChart"></canvas>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="font-bold mb-4 text-gray-700">Priority Distribution</h3>
+                    <canvas id="priorityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let charts = {};
+
+        async function processData() {
+            const curFile = document.getElementById('currentFile').files[0];
+            const arcFile = document.getElementById('archiveFile').files[0];
+
+            if (!curFile || !arcFile) {
+                alert("Please upload both files first!");
+                return;
+            }
+
+            const curData = await parseCSV(curFile);
+            const arcData = await parseCSV(arcFile);
+
+            const cleanedCur = cleanData(curData, 'Current');
+            const cleanedArc = cleanData(arcData, 'Archive');
+
+            const master = [...cleanedCur, ...cleanedArc];
+            renderDashboard(master, cleanedCur.length, cleanedArc.length);
+        }
+
+        function parseCSV(file) {
+            return new Promise(resolve => {
+                Papa.parse(file, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: results => resolve(results.data)
+                });
+            });
+        }
+
+        function cleanData(data, source) {
+            // Filter for rows that actually have a Ticket Number (ignores continuation rows for stats)
+            return data
+                .filter(row => {
+                    const ticketNum = row['Ticket Number'] || row['Ticket Number\u00A0'];
+                    return ticketNum && ticketNum.trim() !== "";
+                })
+                .map(row => ({
+                    ...row,
+                    Source: source,
+                    Priority: row['Priority Rating'] || 'Unknown'
+                }));
+        }
+
+        function renderDashboard(data, curSize, arcSize) {
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('totalCount').innerText = data.length;
+            document.getElementById('currentCount').innerText = curSize;
+            document.getElementById('archiveCount').innerText = arcSize;
+
+            updateVolumeChart(curSize, arcSize);
+            updatePriorityChart(data);
+        }
+
+        function updateVolumeChart(cur, arc) {
+            if (charts.volume) charts.volume.destroy();
+            const ctx = document.getElementById('volumeChart').getContext('2d');
+            charts.volume = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Current', 'Archive'],
+                    datasets: [{
+                        label: 'Tickets',
+                        data: [cur, arc],
+                        backgroundColor: ['#3b82f6', '#f97316']
+                    }]
+                }
+            });
+        }
+
+        function updatePriorityChart(data) {
+            const priorities = [...new Set(data.map(d => d.Priority))];
+            const currentP = priorities.map(p => data.filter(d => d.Priority === p && d.Source === 'Current').length);
+            const archiveP = priorities.map(p => data.filter(d => d.Priority === p && d.Source === 'Archive').length);
+
+            if (charts.priority) charts.priority.destroy();
+            const ctx = document.getElementById('priorityChart').getContext('2d');
+            charts.priority = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: priorities,
+                    datasets: [
+                        { label: 'Current', data: currentP, backgroundColor: '#3b82f6' },
+                        { label: 'Archive', data: archiveP, backgroundColor: '#f97316' }
+                    ]
+                }
+            });
+        }
+    </script>
+</body>
+</html>
