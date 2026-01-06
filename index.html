@@ -8,16 +8,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 min-h-screen p-4 md:p-10">
+<body class="bg-slate-50 min-h-screen p-4 md:p-10 text-slate-900">
     <div class="max-w-6xl mx-auto">
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Helpdesk Analytics Engine</h1>
-                <p class="text-slate-500 font-medium tracking-tight">Full Team Performance & Data Insights</p>
+                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs">Verified Count Logic (30k+) + Advanced Insights</p>
             </div>
             <div class="flex items-center bg-white p-2 rounded-lg shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-slate-400 mr-3 uppercase px-2 border-r border-slate-100">Security</span>
-                <span class="text-[10px] text-emerald-600 font-black bg-emerald-50 px-2 py-1 rounded uppercase">Local Browser Processing</span>
+                <span class="text-xs font-bold text-slate-400 mr-3 uppercase px-2 border-r border-slate-100">Privacy</span>
+                <span class="text-[10px] text-emerald-600 font-black bg-emerald-50 px-2 py-1 rounded uppercase tracking-tighter">100% Local Processing</span>
             </div>
         </header>
 
@@ -33,7 +33,7 @@
         </div>
 
         <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-slate-800 transition-all mb-12 border-b-4 border-slate-700 active:border-b-0 active:translate-y-1">
-            Generate Full Team Analysis
+            Generate Comprehensive Analysis
         </button>
 
         <div id="dashboard" class="hidden space-y-8 pb-20">
@@ -43,7 +43,7 @@
                     <p id="totalCount" class="text-3xl font-black text-slate-900">0</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500 text-center">
-                    <p class="text-[10px] font-black text-blue-400 uppercase mb-1">Active DB</p>
+                    <p class="text-[10px] font-black text-blue-400 uppercase mb-1 text-center">Active DB</p>
                     <p id="currentCount" class="text-3xl font-black text-slate-900">0</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400 text-center">
@@ -55,52 +55,44 @@
                     <p id="topSystem" class="text-lg font-bold text-slate-800">-</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500 text-center">
-                    <p class="text-[10px] font-black text-emerald-400 uppercase mb-1">Total Contributors</p>
-                    <p id="teamSize" class="text-3xl font-black text-slate-900">0</p>
+                    <p class="text-[10px] font-black text-emerald-400 uppercase mb-1">Lead Contributor</p>
+                    <p id="topEngineer" class="text-lg font-bold text-slate-800 truncate">-</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 flex items-center justify-between">
-                        <span class="flex items-center"><span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> Top 10 Performers</span>
-                        <span class="text-[10px] text-slate-400 uppercase font-black tracking-widest">Live DB Closes</span>
+                    <h3 class="font-bold text-slate-800 mb-6 flex items-center justify-between uppercase text-xs tracking-widest">
+                        <span>Engineer Leaderboard (Closed Tickets)</span>
                     </h3>
                     <div class="h-80"><canvas id="engineerChart"></canvas></div>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-                    <h3 class="font-bold text-slate-800 mb-4 flex items-center">
-                        <span class="w-2 h-2 bg-slate-900 rounded-full mr-2"></span> Complete Team Rank
-                    </h3>
-                    <div class="flex-grow overflow-y-auto pr-2" style="max-height: 320px;">
-                        <table class="w-full text-xs">
-                            <thead class="bg-slate-50 sticky top-0">
-                                <tr>
-                                    <th class="py-2 text-left text-slate-400 uppercase font-bold">Engineer</th>
-                                    <th class="py-2 text-right text-slate-400 uppercase font-bold">Closed</th>
-                                </tr>
-                            </thead>
-                            <tbody id="leaderboardBody" class="divide-y divide-slate-50">
-                                </tbody>
-                        </table>
-                    </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 overflow-y-auto" style="max-height: 400px;">
+                    <h3 class="font-bold text-slate-800 mb-4 text-xs uppercase tracking-widest border-b pb-2">Full Team Rank</h3>
+                    <table class="w-full text-xs">
+                        <tbody id="leaderboardBody" class="divide-y divide-slate-50"></tbody>
+                    </table>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6">Database Comparison</h3>
+                    <h3 class="font-bold text-slate-800 mb-6 flex items-center uppercase text-xs tracking-widest">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span> Distribution
+                    </h3>
                     <div class="h-64"><canvas id="volumeChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6">Priority Distribution</h3>
+                    <h3 class="font-bold text-slate-800 mb-6 flex items-center uppercase text-xs tracking-widest">
+                        <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span> Priority Breakdown
+                    </h3>
                     <div class="h-64"><canvas id="priorityChart"></canvas></div>
                 </div>
             </div>
 
             <div class="bg-slate-900 text-white p-10 rounded-3xl shadow-xl">
-                <h3 class="text-2xl font-black mb-2 uppercase tracking-tight text-center">Technical Keyword Cloud</h3>
-                <div id="keywordCloud" class="flex flex-wrap justify-center gap-3 py-4"></div>
+                <h3 class="text-xl font-bold mb-6 uppercase tracking-widest text-center border-b border-slate-800 pb-4">Technical Keyword Cloud</h3>
+                <div id="keywordCloud" class="flex flex-wrap justify-center gap-3"></div>
             </div>
         </div>
     </div>
@@ -111,56 +103,65 @@
         async function processData() {
             const curFile = document.getElementById('currentFile').files[0];
             const arcFile = document.getElementById('archiveFile').files[0];
-            if (!curFile || !arcFile) { alert("Select both files."); return; }
+            if (!curFile || !arcFile) { alert("Please select both files."); return; }
 
             const curRaw = await parseCSV(curFile);
             const arcRaw = await parseCSV(arcFile);
 
-            const processedCur = fullProcess(curRaw, 'Current');
-            const processedArc = fullProcess(arcRaw, 'Archive');
+            // 1. USE THE WORKING COUNT LOGIC
+            const cleanedCur = cleanData(curRaw, 'Current');
+            const cleanedArc = cleanData(arcRaw, 'Archive');
 
-            renderDashboard([...processedCur, ...processedArc], processedCur.length, processedArc.length);
+            const master = [...cleanedCur, ...cleanedArc];
+
+            // 2. ENRICH FOR FEATURES (MERGE TEXT WITHOUT BREAKING COUNTS)
+            const enriched = enrichData(master, [...curRaw, ...arcRaw]);
+
+            renderDashboard(enriched, cleanedCur.length, cleanedArc.length);
         }
 
         function parseCSV(file) {
             return new Promise(resolve => Papa.parse(file, {header: true, skipEmptyLines: true, complete: r => resolve(r.data)}));
         }
 
-        function fullProcess(data, source) {
-            const keys = Object.keys(data[0] || {});
-            const getK = q => keys.find(k => k.toLowerCase().replace(/[^a-z]/g, '').includes(q));
-            
-            const idK = getK('ticketnumber') || getK('id');
-            const assignK = getK('assignedto') || getK('owner') || getK('engineer');
-            const statusK = getK('status');
-            const descK = getK('description');
+        // --- VERIFIED COUNT LOGIC ---
+        function cleanData(data, source) {
+            return data
+                .filter(row => {
+                    const ticketNum = row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID'];
+                    return ticketNum && ticketNum.toString().trim() !== "";
+                })
+                .map(row => {
+                    const id = (row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID']).toString().trim();
+                    return {
+                        ...row,
+                        TicketID: id,
+                        Source: source,
+                        Priority: row['Priority Rating'] || 'Unknown',
+                        Status: (row['Status'] || 'Open').toString().trim(),
+                        AssignedTo: cleanName(row['Assigned To'] || 'Unassigned')
+                    };
+                });
+        }
 
-            const ticketMap = new Map();
+        // --- ENRICH DESCRIPTIONS FOR KEYWORDS ---
+        function enrichData(filteredList, rawPool) {
+            const descMap = new Map();
             let currentID = null;
 
-            data.forEach(row => {
-                const idVal = row[idK];
-                if (idVal && idVal.toString().trim() !== "") currentID = idVal.toString().trim();
-
+            rawPool.forEach(row => {
+                const id = row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID'];
+                if (id && id.toString().trim() !== "") currentID = id.toString().trim();
                 if (currentID) {
-                    if (!ticketMap.has(currentID)) {
-                        ticketMap.set(currentID, {
-                            TicketID: currentID,
-                            Priority: row[getK('priority')] || 'P3',
-                            SystemType: sanitizeSystem(row[getK('systemtype')]),
-                            Status: (row[statusK] || 'Open').toString().trim(),
-                            AssignedTo: 'Unassigned',
-                            FullDesc: "",
-                            Source: source
-                        });
-                    }
-                    const t = ticketMap.get(currentID);
-                    const name = row[assignK];
-                    if (name && name !== "0" && name !== "nan") t.AssignedTo = cleanName(name);
-                    t.FullDesc += " " + (row[descK] || "");
+                    descMap.set(currentID, (descMap.get(currentID) || "") + " " + (row['Description'] || ""));
                 }
             });
-            return Array.from(ticketMap.values());
+
+            return filteredList.map(item => ({
+                ...item,
+                FullDesc: descMap.get(item.TicketID) || "",
+                SystemType: sanitizeSystem(item['System Type'])
+            }));
         }
 
         function sanitizeSystem(val) {
@@ -171,6 +172,7 @@
 
         function cleanName(val) {
             let n = val.toString().trim();
+            if (n === "0" || n === "nan" || n === "") return "Unassigned";
             if (n.includes('@')) {
                 n = n.split('@')[0].replace(/[._]/g, ' ');
                 return n.split(' ').map(s => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
@@ -180,6 +182,7 @@
 
         function renderDashboard(master, curLen, arcLen) {
             document.getElementById('dashboard').classList.remove('hidden');
+            
             document.getElementById('totalCount').innerText = master.length.toLocaleString();
             document.getElementById('currentCount').innerText = curLen.toLocaleString();
             document.getElementById('archiveCount').innerText = arcLen.toLocaleString();
@@ -187,47 +190,48 @@
             const sysFreq = countOcc(master, 'SystemType');
             document.getElementById('topSystem').innerText = Object.keys(sysFreq)[0] || 'N/A';
 
-            // ENGINEER LOGIC: COMPLETE LIST
+            // Engineer Ranking (Current Only + Completed Status)
             const completed = master.filter(d => d.Source === 'Current' && d.Status.toLowerCase().startsWith('complete'));
             const engFreq = countOcc(completed, 'AssignedTo');
-            const sortedEngineers = Object.entries(engFreq); // [Name, Count]
+            const sortedEng = Object.entries(engFreq);
             
-            document.getElementById('teamSize').innerText = sortedEngineers.length;
+            document.getElementById('topEngineer').innerText = sortedEng[0] ? sortedEng[0][0] : 'N/A';
 
-            // Render Chart (Top 10 only for space)
-            const top10Labels = sortedEngineers.slice(0, 10).map(e => e[0]);
-            const top10Values = sortedEngineers.slice(0, 10).map(e => e[1]);
-            updateChart('engineerChart', 'bar', top10Labels, top10Values, '#10b981');
+            // Leaderboard Chart
+            updateChart('engineerChart', 'bar', sortedEng.slice(0, 10).map(e=>e[0]), sortedEng.slice(0, 10).map(e=>e[1]), '#10b981', true);
 
-            // Render Full List (Table)
-            const listContainer = document.getElementById('leaderboardBody');
-            listContainer.innerHTML = sortedEngineers.map(([name, count], index) => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="py-2 font-medium text-slate-600 flex items-center">
-                        <span class="w-4 text-[9px] font-black text-slate-300 mr-2">${index + 1}</span>
-                        ${name}
-                    </td>
-                    <td class="py-2 text-right font-black text-slate-900">${count}</td>
+            // Leaderboard Table
+            document.getElementById('leaderboardBody').innerHTML = sortedEng.map(([name, count], i) => `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-2 text-slate-500 font-medium"><span class="mr-2 opacity-30 text-[9px]">${i+1}</span>${name}</td>
+                    <td class="py-2 text-right font-bold">${count}</td>
                 </tr>
             `).join('');
 
-            updateChart('volumeChart', 'doughnut', ['Current', 'Archive'], [curLen, arcLen], ['#2563eb', '#f97316']);
-            updateBarMulti('priorityChart', [...new Set(master.map(d => d.Priority))].sort(), master, 'Priority');
+            updateChart('volumeChart', 'doughnut', ['Current', 'Archive'], [curLen, arcLen], ['#2563eb', '#f97316'], false);
+            
+            const priorities = [...new Set(master.map(d => d.Priority))].sort();
+            updateBarMulti('priorityChart', priorities, master, 'Priority');
+
             analyzeKeywords(master);
         }
 
         function countOcc(arr, key) {
             const c = {};
-            arr.forEach(i => { if(i[key] && i[key] !== 'Unassigned' && i[key] !== '0') c[i[key]] = (c[i[key]] || 0) + 1; });
+            arr.forEach(i => { if(i[key] && i[key] !== 'Unassigned') c[i[key]] = (c[i[key]] || 0) + 1; });
             return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1]));
         }
 
-        function updateChart(id, type, labels, data, color) {
+        function updateChart(id, type, labels, data, color, isHorizontal) {
             if (charts[id]) charts[id].destroy();
             charts[id] = new Chart(document.getElementById(id), {
                 type: type,
                 data: { labels, datasets: [{ data, backgroundColor: color, borderRadius: 6 }] },
-                options: { maintainAspectRatio: false, indexAxis: id==='engineerChart'?'y':'x', plugins: { legend: { display: type==='doughnut', position:'bottom' } } }
+                options: { 
+                    maintainAspectRatio: false, 
+                    indexAxis: isHorizontal ? 'y' : 'x',
+                    plugins: { legend: { display: type==='doughnut', position: 'bottom' } } 
+                }
             });
         }
 
@@ -250,7 +254,9 @@
             words.forEach(w => { if(!stop.includes(w)) freq[w] = (freq[w] || 0) + 1; });
             const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 15);
             document.getElementById('keywordCloud').innerHTML = sorted.map(([w, c]) => 
-                `<span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">${w} <span class="text-blue-400 ml-1 font-bold">${c}</span></span>`
+                `<span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-blue-100">
+                    ${w} <span class="text-blue-400 ml-1 font-bold">${c}</span>
+                </span>`
             ).join('');
         }
     </script>
