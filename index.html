@@ -13,11 +13,11 @@
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Helpdesk Analytics Engine</h1>
-                <p class="text-slate-500">Performance Comparison & Engineer Leaderboard</p>
+                <p class="text-slate-500 font-medium tracking-tight">Full Team Performance & Data Insights</p>
             </div>
             <div class="flex items-center bg-white p-2 rounded-lg shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-slate-400 mr-3 uppercase px-2">Data Protection:</span>
-                <span class="text-xs text-emerald-600 font-semibold bg-emerald-50 px-2 py-1 rounded">Local Processing Only</span>
+                <span class="text-xs font-bold text-slate-400 mr-3 uppercase px-2 border-r border-slate-100">Security</span>
+                <span class="text-[10px] text-emerald-600 font-black bg-emerald-50 px-2 py-1 rounded uppercase">Local Browser Processing</span>
             </div>
         </header>
 
@@ -32,11 +32,11 @@
             </div>
         </div>
 
-        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-slate-800 hover:-translate-y-0.5 transition-all mb-12">
-            Generate Comparative Analysis
+        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-slate-800 transition-all mb-12 border-b-4 border-slate-700 active:border-b-0 active:translate-y-1">
+            Generate Full Team Analysis
         </button>
 
-        <div id="dashboard" class="hidden space-y-8">
+        <div id="dashboard" class="hidden space-y-8 pb-20">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-300 text-center">
                     <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Unique</p>
@@ -55,60 +55,52 @@
                     <p id="topSystem" class="text-lg font-bold text-slate-800">-</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500 text-center">
-                    <p class="text-[10px] font-black text-emerald-400 uppercase mb-1">Top Contributor</p>
-                    <p id="topEngineerName" class="text-lg font-bold text-slate-800 truncate">-</p>
+                    <p class="text-[10px] font-black text-emerald-400 uppercase mb-1">Total Contributors</p>
+                    <p id="teamSize" class="text-3xl font-black text-slate-900">0</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-slate-800 mb-6 flex items-center justify-between">
+                        <span class="flex items-center"><span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> Top 10 Performers</span>
+                        <span class="text-[10px] text-slate-400 uppercase font-black tracking-widest">Live DB Closes</span>
+                    </h3>
+                    <div class="h-80"><canvas id="engineerChart"></canvas></div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                    <h3 class="font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="w-2 h-2 bg-slate-900 rounded-full mr-2"></span> Complete Team Rank
+                    </h3>
+                    <div class="flex-grow overflow-y-auto pr-2" style="max-height: 320px;">
+                        <table class="w-full text-xs">
+                            <thead class="bg-slate-50 sticky top-0">
+                                <tr>
+                                    <th class="py-2 text-left text-slate-400 uppercase font-bold">Engineer</th>
+                                    <th class="py-2 text-right text-slate-400 uppercase font-bold">Closed</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardBody" class="divide-y divide-slate-50">
+                                </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 flex items-center">
-                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span> Database Distribution
-                    </h3>
+                    <h3 class="font-bold text-slate-800 mb-6">Database Comparison</h3>
                     <div class="h-64"><canvas id="volumeChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 flex items-center">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2"></span> Engineer Leaderboard (Closed Tickets)
-                    </h3>
-                    <div class="h-64"><canvas id="engineerChart"></canvas></div>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 flex items-center">
-                        <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span> Priority Breakdown
-                    </h3>
+                    <h3 class="font-bold text-slate-800 mb-6">Priority Distribution</h3>
                     <div class="h-64"><canvas id="priorityChart"></canvas></div>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 flex items-center">
-                        <span class="w-2 h-2 bg-indigo-500 rounded-full mr-2"></span> Regional Distribution
-                    </h3>
-                    <div class="h-64"><canvas id="regionChart"></canvas></div>
-                </div>
             </div>
 
-            <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl">
-                <h3 class="text-xl font-bold mb-2 uppercase tracking-tight text-center">Keyword Analysis</h3>
-                <p class="text-slate-400 mb-6 text-sm text-center italic">Frequent terms detected across all ticket descriptions:</p>
-                <div id="keywordCloud" class="flex flex-wrap justify-center gap-3"></div>
-            </div>
-
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                <h3 class="font-bold text-slate-800 mb-6 uppercase text-xs tracking-widest">Master Ticket Preview</h3>
-                <div class="overflow-x-auto max-h-[500px]">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold sticky top-0">
-                            <tr>
-                                <th class="px-4 py-3">ID</th>
-                                <th class="px-4 py-3">Source</th>
-                                <th class="px-4 py-3">Assigned To</th>
-                                <th class="px-4 py-3">Status</th>
-                                <th class="px-4 py-3">System Type</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dataTable" class="divide-y divide-slate-100 text-slate-600"></tbody>
-                    </table>
-                </div>
+            <div class="bg-slate-900 text-white p-10 rounded-3xl shadow-xl">
+                <h3 class="text-2xl font-black mb-2 uppercase tracking-tight text-center">Technical Keyword Cloud</h3>
+                <div id="keywordCloud" class="flex flex-wrap justify-center gap-3 py-4"></div>
             </div>
         </div>
     </div>
@@ -119,64 +111,71 @@
         async function processData() {
             const curFile = document.getElementById('currentFile').files[0];
             const arcFile = document.getElementById('archiveFile').files[0];
-            if (!curFile || !arcFile) { alert("Please select both files."); return; }
+            if (!curFile || !arcFile) { alert("Select both files."); return; }
 
             const curRaw = await parseCSV(curFile);
             const arcRaw = await parseCSV(arcFile);
 
-            // Using your verified logic
-            const cleanCur = smartFill(curRaw, 'Current');
-            const cleanArc = smartFill(arcRaw, 'Archive');
+            const processedCur = fullProcess(curRaw, 'Current');
+            const processedArc = fullProcess(arcRaw, 'Archive');
 
-            const uniqueCur = deduplicate(cleanCur);
-            const uniqueArc = deduplicate(cleanArc);
-
-            renderDashboard([...uniqueCur, ...uniqueArc], uniqueCur.length, uniqueArc.length);
+            renderDashboard([...processedCur, ...processedArc], processedCur.length, processedArc.length);
         }
 
         function parseCSV(file) {
-            return new Promise(resolve => Papa.parse(file, {
-                header: true, skipEmptyLines: true, complete: r => resolve(r.data)
-            }));
+            return new Promise(resolve => Papa.parse(file, {header: true, skipEmptyLines: true, complete: r => resolve(r.data)}));
         }
 
-        function smartFill(data, source) {
-            let lastID = null, lastPri = null, lastReg = null, lastTeam = null, lastSys = null, lastAssign = null, lastStatus = null;
-            return data.map(row => {
-                const ticketNum = row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID'];
-                
-                if (ticketNum && ticketNum.toString().trim() !== "") {
-                    lastID = ticketNum.toString().trim();
-                    lastPri = row['Priority Rating'] || 'Unknown';
-                    lastReg = row['Region'] || 'Unknown';
-                    lastTeam = row['Sub Team'] || 'Unassigned';
-                    lastAssign = row['Assigned To'] || 'Unassigned';
-                    lastStatus = row['Status'] || 'Open';
-                    
-                    let rawSys = (row['System Type'] || "").toString().replace(/[\[\]"]/g, '').trim();
-                    if (rawSys !== "" && isNaN(rawSys)) {
-                        lastSys = rawSys;
-                    } else if (!lastSys) {
-                        lastSys = "Other";
+        function fullProcess(data, source) {
+            const keys = Object.keys(data[0] || {});
+            const getK = q => keys.find(k => k.toLowerCase().replace(/[^a-z]/g, '').includes(q));
+            
+            const idK = getK('ticketnumber') || getK('id');
+            const assignK = getK('assignedto') || getK('owner') || getK('engineer');
+            const statusK = getK('status');
+            const descK = getK('description');
+
+            const ticketMap = new Map();
+            let currentID = null;
+
+            data.forEach(row => {
+                const idVal = row[idK];
+                if (idVal && idVal.toString().trim() !== "") currentID = idVal.toString().trim();
+
+                if (currentID) {
+                    if (!ticketMap.has(currentID)) {
+                        ticketMap.set(currentID, {
+                            TicketID: currentID,
+                            Priority: row[getK('priority')] || 'P3',
+                            SystemType: sanitizeSystem(row[getK('systemtype')]),
+                            Status: (row[statusK] || 'Open').toString().trim(),
+                            AssignedTo: 'Unassigned',
+                            FullDesc: "",
+                            Source: source
+                        });
                     }
-                }
-                return { 
-                    ...row, TicketID: lastID, Priority: lastPri, Region: lastReg, SubTeam: lastTeam,
-                    SystemType: lastSys, Source: source, AssignedTo: lastAssign, CleanStatus: lastStatus
-                };
-            }).filter(r => r.TicketID !== null);
-        }
-
-        function deduplicate(data) {
-            const map = new Map();
-            data.forEach(item => {
-                if(!map.has(item.TicketID)) {
-                    map.set(item.TicketID, {...item, FullDesc: item.Description || ""});
-                } else {
-                    map.get(item.TicketID).FullDesc += " " + (item.Description || "");
+                    const t = ticketMap.get(currentID);
+                    const name = row[assignK];
+                    if (name && name !== "0" && name !== "nan") t.AssignedTo = cleanName(name);
+                    t.FullDesc += " " + (row[descK] || "");
                 }
             });
-            return Array.from(map.values());
+            return Array.from(ticketMap.values());
+        }
+
+        function sanitizeSystem(val) {
+            if (!val) return "Other";
+            let clean = val.toString().replace(/[\[\]"]/g, '').trim();
+            return (clean === "" || !isNaN(clean)) ? "Other" : clean;
+        }
+
+        function cleanName(val) {
+            let n = val.toString().trim();
+            if (n.includes('@')) {
+                n = n.split('@')[0].replace(/[._]/g, ' ');
+                return n.split(' ').map(s => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
+            }
+            return n;
         }
 
         function renderDashboard(master, curLen, arcLen) {
@@ -188,63 +187,53 @@
             const sysFreq = countOcc(master, 'SystemType');
             document.getElementById('topSystem').innerText = Object.keys(sysFreq)[0] || 'N/A';
 
-            // Engineer Leaderboard Logic (Current only + Complete status)
-            const closedCurrent = master.filter(d => 
-                d.Source === 'Current' && 
-                d.CleanStatus && 
-                d.CleanStatus.toLowerCase().trim().startsWith('complete')
-            );
-            const engFreq = countOcc(closedCurrent, 'AssignedTo');
-            const topEngineer = Object.keys(engFreq)[0] || 'N/A';
-            document.getElementById('topEngineerName').innerText = topEngineer;
+            // ENGINEER LOGIC: COMPLETE LIST
+            const completed = master.filter(d => d.Source === 'Current' && d.Status.toLowerCase().startsWith('complete'));
+            const engFreq = countOcc(completed, 'AssignedTo');
+            const sortedEngineers = Object.entries(engFreq); // [Name, Count]
+            
+            document.getElementById('teamSize').innerText = sortedEngineers.length;
 
-            // Charts
+            // Render Chart (Top 10 only for space)
+            const top10Labels = sortedEngineers.slice(0, 10).map(e => e[0]);
+            const top10Values = sortedEngineers.slice(0, 10).map(e => e[1]);
+            updateChart('engineerChart', 'bar', top10Labels, top10Values, '#10b981');
+
+            // Render Full List (Table)
+            const listContainer = document.getElementById('leaderboardBody');
+            listContainer.innerHTML = sortedEngineers.map(([name, count], index) => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-2 font-medium text-slate-600 flex items-center">
+                        <span class="w-4 text-[9px] font-black text-slate-300 mr-2">${index + 1}</span>
+                        ${name}
+                    </td>
+                    <td class="py-2 text-right font-black text-slate-900">${count}</td>
+                </tr>
+            `).join('');
+
             updateChart('volumeChart', 'doughnut', ['Current', 'Archive'], [curLen, arcLen], ['#2563eb', '#f97316']);
-            
-            // Leaderboard Chart
-            const engLabels = Object.keys(engFreq).slice(0, 5);
-            const engData = Object.values(engFreq).slice(0, 5);
-            updateChart('engineerChart', 'bar', engLabels, engData, '#10b981');
-
-            const priorities = [...new Set(master.map(d => d.Priority))].sort();
-            updateBarChart('priorityChart', priorities, master);
-            
-            const regions = [...new Set(master.map(d => d.Region))].filter(r => r !== 'Unknown');
-            updateRegionChart('regionChart', regions, master);
-
+            updateBarMulti('priorityChart', [...new Set(master.map(d => d.Priority))].sort(), master, 'Priority');
             analyzeKeywords(master);
-            renderTable(master);
         }
 
         function countOcc(arr, key) {
             const c = {};
-            arr.forEach(i => { if(i[key] && i[key] !== 'Unassigned') c[i[key]] = (c[i[key]] || 0) + 1; });
+            arr.forEach(i => { if(i[key] && i[key] !== 'Unassigned' && i[key] !== '0') c[i[key]] = (c[i[key]] || 0) + 1; });
             return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1]));
         }
 
-        function updateChart(id, type, labels, data, colors) {
+        function updateChart(id, type, labels, data, color) {
             if (charts[id]) charts[id].destroy();
             charts[id] = new Chart(document.getElementById(id), {
                 type: type,
-                data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 8 }] },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: type === 'doughnut', position: 'bottom' } } }
+                data: { labels, datasets: [{ data, backgroundColor: color, borderRadius: 6 }] },
+                options: { maintainAspectRatio: false, indexAxis: id==='engineerChart'?'y':'x', plugins: { legend: { display: type==='doughnut', position:'bottom' } } }
             });
         }
 
-        function updateBarChart(id, labels, data) {
-            const cur = labels.map(l => data.filter(d => d.Priority === l && d.Source === 'Current').length);
-            const arc = labels.map(l => data.filter(d => d.Priority === l && d.Source === 'Archive').length);
-            if (charts[id]) charts[id].destroy();
-            charts[id] = new Chart(document.getElementById(id), {
-                type: 'bar',
-                data: { labels, datasets: [{ label: 'Current', data: cur, backgroundColor: '#2563eb' }, { label: 'Archive', data: arc, backgroundColor: '#fb923c' }] },
-                options: { maintainAspectRatio: false }
-            });
-        }
-
-        function updateRegionChart(id, labels, data) {
-            const cur = labels.map(l => data.filter(d => d.Region === l && d.Source === 'Current').length);
-            const arc = labels.map(l => data.filter(d => d.Region === l && d.Source === 'Archive').length);
+        function updateBarMulti(id, labels, data, key) {
+            const cur = labels.map(l => data.filter(d => d[key] === l && d.Source === 'Current').length);
+            const arc = labels.map(l => data.filter(d => d[key] === l && d.Source === 'Archive').length);
             if (charts[id]) charts[id].destroy();
             charts[id] = new Chart(document.getElementById(id), {
                 type: 'bar',
@@ -261,21 +250,8 @@
             words.forEach(w => { if(!stop.includes(w)) freq[w] = (freq[w] || 0) + 1; });
             const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 15);
             document.getElementById('keywordCloud').innerHTML = sorted.map(([w, c]) => 
-                `<span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-tighter">${w} <span class="text-blue-400 ml-1 font-black">${c}</span></span>`
+                `<span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">${w} <span class="text-blue-400 ml-1 font-bold">${c}</span></span>`
             ).join('');
-        }
-
-        function renderTable(data) {
-            const tbody = document.getElementById('dataTable');
-            tbody.innerHTML = data.slice(0, 500).map(row => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-4 py-3 font-bold text-slate-900">${row.TicketID}</td>
-                    <td class="px-4 py-3 font-bold text-[10px] uppercase ${row.Source === 'Current' ? 'text-blue-600' : 'text-orange-600'}">${row.Source}</td>
-                    <td class="px-4 py-3 italic text-slate-500">${row.AssignedTo}</td>
-                    <td class="px-4 py-3 text-slate-500">${row.CleanStatus}</td>
-                    <td class="px-4 py-3 font-medium text-slate-900">${row.SystemType}</td>
-                </tr>
-            `).join('');
         }
     </script>
 </body>
