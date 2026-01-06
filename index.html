@@ -2,57 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Helpdesk Pro Analyzer - Bulletproof Version</title>
+    <title>Helpdesk Debugger & Analyzer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 min-h-screen p-4 md:p-10 text-slate-900">
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-8">
-            <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">Helpdesk Intelligence Dashboard</h1>
-            <p class="text-slate-500">Auto-detecting columns and merging records...</p>
+<body class="bg-slate-100 min-h-screen p-4 md:p-10 text-slate-900 font-sans">
+    <div class="max-w-5xl mx-auto">
+        <header class="mb-8 border-b border-slate-300 pb-6">
+            <h1 class="text-3xl font-black text-slate-800 uppercase tracking-tighter">Diagnostic Helpdesk Tool</h1>
+            <p class="text-slate-600">Identifying headers and processing multi-line data...</p>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <label class="block text-xs font-black text-slate-400 uppercase mb-3">Current Data (.csv)</label>
-                <input type="file" id="currentFile" accept=".csv" class="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-600 file:text-white cursor-pointer"/>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-lg shadow-sm border">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Current CSV</label>
+                <input type="file" id="currentFile" accept=".csv" class="w-full text-sm"/>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <label class="block text-xs font-black text-slate-400 uppercase mb-3">Archive Data (.csv)</label>
-                <input type="file" id="archiveFile" accept=".csv" class="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-orange-500 file:text-white cursor-pointer"/>
+            <div class="bg-white p-4 rounded-lg shadow-sm border">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Archive CSV</label>
+                <input type="file" id="archiveFile" accept=".csv" class="w-full text-sm"/>
             </div>
         </div>
 
-        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg hover:bg-slate-800 transition-all mb-6">
-            Run Analysis
+        <button onclick="processData()" class="w-full bg-blue-600 text-white py-4 rounded-lg font-bold shadow-lg hover:bg-blue-700 mb-8 transition-all">
+            Process & Debug Data
         </button>
 
-        <div id="statusLog" class="text-xs font-mono bg-slate-100 p-3 rounded-lg mb-8 text-slate-600 border border-slate-200">
-            System Status: Waiting for files...
+        <div id="debugLog" class="bg-black text-lime-400 p-4 rounded-lg font-mono text-xs mb-8 min-h-[100px] overflow-y-auto shadow-inner">
+            > System Ready. Upload files to begin...
         </div>
 
-        <div id="dashboard" class="hidden space-y-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase">Unique Tickets</p><p id="totalCount" class="text-2xl font-black">0</p></div>
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase">Top System</p><p id="topSystem" class="text-xl font-bold text-blue-600">-</p></div>
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm"><p class="text-[10px] font-bold text-slate-400 uppercase">Busiest Team</p><p id="topTeam" class="text-xl font-bold text-emerald-600">-</p></div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200"><h3 class="font-bold mb-4">Team Workload</h3><div class="h-64"><canvas id="teamChart"></canvas></div></div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-200"><h3 class="font-bold mb-4">System Breakdown</h3><div class="h-64"><canvas id="systemChart"></canvas></div></div>
-            </div>
-            <div class="bg-slate-900 text-white p-8 rounded-3xl">
-                <h3 class="text-xl font-bold mb-4">Keyword Frequency Analysis</h3>
-                <div id="keywordCloud" class="flex flex-wrap gap-3"></div>
+        <div id="results" class="hidden space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-500 uppercase text-xs mb-4">Volume Distribution</h3>
+                    <div class="h-64"><canvas id="volChart"></canvas></div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-500 uppercase text-xs mb-4">Top Keywords</h3>
+                    <div id="keywords" class="flex flex-wrap gap-2 pt-4"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        let charts = {};
-        const log = (msg) => document.getElementById('statusLog').innerText = `Log: ${msg}`;
+        const log = (msg) => {
+            const el = document.getElementById('debugLog');
+            el.innerHTML += `<br>> ${msg}`;
+            el.scrollTop = el.scrollHeight;
+        };
 
         async function processData() {
             try {
@@ -60,26 +60,25 @@
                 const arcFile = document.getElementById('archiveFile').files[0];
                 if (!curFile || !arcFile) return alert("Select both files.");
 
-                log("Parsing CSV files...");
+                log("Reading files...");
                 const curRaw = await parseCSV(curFile);
                 const arcRaw = await parseCSV(arcFile);
 
-                log(`Read ${curRaw.length} rows from Current and ${arcRaw.length} from Archive.`);
+                log(`Headers detected in Current: [${Object.keys(curRaw[0]).join(', ')}]`);
                 
-                const cleanCur = smartFill(curRaw, 'Current');
-                const cleanArc = smartFill(arcRaw, 'Archive');
+                const cleanCur = smartProcess(curRaw, 'Current');
+                const cleanArc = smartProcess(arcRaw, 'Archive');
 
-                const uniqueMaster = deduplicate([...cleanCur, ...cleanArc]);
-                log(`Successfully merged into ${uniqueMaster.length} unique tickets.`);
+                const master = [...cleanCur, ...cleanArc];
+                log(`Unique Tickets identified: ${master.length}`);
 
-                if (uniqueMaster.length === 0) throw "No ticket data found. Check column headers.";
-
-                renderDashboard(uniqueMaster);
-                document.getElementById('dashboard').classList.remove('hidden');
-                log("Analysis Complete!");
-            } catch (err) {
-                log(`ERROR: ${err}`);
-                console.error(err);
+                if (master.length > 0) {
+                    showDashboard(master);
+                } else {
+                    log("CRITICAL: 0 tickets identified. Check if 'Ticket Number' column exists.");
+                }
+            } catch (e) {
+                log(`ERROR: ${e.message}`);
             }
         }
 
@@ -87,74 +86,61 @@
             return new Promise(resolve => Papa.parse(file, {header: true, skipEmptyLines: true, complete: r => resolve(r.data)}));
         }
 
-        function findKey(row, query) {
-            // Searches for a key that contains the query string, case-insensitive
-            return Object.keys(row).find(key => key.toLowerCase().includes(query.toLowerCase()));
-        }
-
-        function smartFill(data, source) {
-            if (data.length === 0) return [];
-            let lastID = null, lastTeam = null, lastSys = null;
+        function smartProcess(data, source) {
+            // Find keys regardless of hidden characters
+            const find = (q) => Object.keys(data[0]).find(k => k.toLowerCase().replace(/[^a-z]/g, '').includes(q));
             
-            // Auto-detect keys once
-            const idKey = findKey(data[0], 'Ticket Number') || findKey(data[0], 'ID');
-            const teamKey = findKey(data[0], 'Sub Team');
-            const sysKey = findKey(data[0], 'System Type');
-            const descKey = findKey(data[0], 'Description');
+            const idK = find('ticketnumber') || find('id');
+            const descK = find('description');
+            
+            log(`Using Column for Ticket ID: "${idK}"`);
 
-            return data.map(row => {
-                const id = row[idKey];
+            let lastID = null;
+            const unique = new Map();
+
+            data.forEach(row => {
+                const id = row[idK];
                 if (id && id.toString().trim() !== "") {
                     lastID = id.toString().trim();
-                    lastTeam = row[teamKey] || 'Unassigned';
-                    lastSys = row[sysKey] || 'Other';
                 }
-                return { ...row, TicketID: lastID, SubTeam: lastTeam, SystemType: lastSys, Description: row[descKey] || '', Source: source };
-            }).filter(r => r.TicketID);
+                
+                if (lastID) {
+                    if (!unique.has(lastID)) {
+                        unique.set(lastID, { ID: lastID, Desc: "", Source: source });
+                    }
+                    const existing = unique.get(lastID);
+                    existing.Desc += " " + (row[descK] || "");
+                }
+            });
+            return Array.from(unique.values());
         }
 
-        function deduplicate(data) {
-            const seen = new Set();
-            return data.filter(i => seen.has(i.TicketID) ? false : seen.add(i.TicketID));
-        }
-
-        function renderDashboard(data) {
-            const teamCounts = countOcc(data, 'SubTeam');
-            const sysCounts = countOcc(data, 'SystemType');
+        function showDashboard(data) {
+            document.getElementById('results').classList.remove('hidden');
             
-            document.getElementById('totalCount').innerText = data.length;
-            document.getElementById('topTeam').innerText = Object.keys(teamCounts)[0] || 'N/A';
-            document.getElementById('topSystem').innerText = (Object.keys(sysCounts)[0] || 'N/A').replace(/[\[\]"]/g, '');
-
-            updateChart('teamChart', 'bar', Object.keys(teamCounts), Object.values(teamCounts), '#10b981');
-            updateChart('systemChart', 'pie', Object.keys(sysCounts), Object.values(sysCounts), ['#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#6366f1']);
-            analyzeKeywords(data);
-        }
-
-        function countOcc(arr, key) {
-            const counts = {};
-            arr.forEach(i => { counts[i[key]] = (counts[i[key]] || 0) + 1; });
-            return Object.fromEntries(Object.entries(counts).sort((a,b) => b[1] - a[1]));
-        }
-
-        function updateChart(id, type, labels, data, colors) {
-            if (charts[id]) charts[id].destroy();
-            charts[id] = new Chart(document.getElementById(id), {
-                type: type,
-                data: { labels: labels.map(l => l.toString().substring(0, 15)), datasets: [{ data: data, backgroundColor: colors }] },
+            // Chart
+            if (window.myChart) window.myChart.destroy();
+            const curN = data.filter(d => d.Source === 'Current').length;
+            const arcN = data.filter(d => d.Source === 'Archive').length;
+            
+            window.myChart = new Chart(document.getElementById('volChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Current', 'Archive'],
+                    datasets: [{ label: 'Unique Tickets', data: [curN, arcN], backgroundColor: ['#2563eb', '#f97316'] }]
+                },
                 options: { maintainAspectRatio: false }
             });
-        }
 
-        function analyzeKeywords(data) {
-            const text = data.map(d => d.Description).join(' ').toLowerCase();
-            const words = text.match(/\b(\w{4,})\b/g) || []; 
-            const stopWords = ['this', 'that', 'from', 'with', 'please', 'thank', 'have', 'there', 'your'];
+            // Keywords
+            const text = data.map(d => d.Desc).join(' ').toLowerCase();
+            const words = text.match(/\b(\w{5,})\b/g) || [];
             const freq = {};
-            words.forEach(w => { if(!stopWords.includes(w)) freq[w] = (freq[w] || 0) + 1; });
-            const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 15);
-            document.getElementById('keywordCloud').innerHTML = sorted.map(([word, count]) => 
-                `<span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-full text-sm font-medium">${word} <span class="text-blue-400 ml-2">${count}</span></span>`
+            words.forEach(w => { if(!['please','thank','regards','hello'].includes(w)) freq[w] = (freq[w]||0)+1; });
+            const sorted = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0, 10);
+            
+            document.getElementById('keywords').innerHTML = sorted.map(([w, c]) => 
+                `<span class="bg-slate-200 px-3 py-1 rounded-full text-xs font-bold">${w} (${c})</span>`
             ).join('');
         }
     </script>
