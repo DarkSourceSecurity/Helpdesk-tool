@@ -3,72 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Helpdesk Pro Analyzer</title>
+    <title>Helpdesk Pro Analyzer - Enhanced</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 min-h-screen p-4 md:p-10">
+<body class="bg-slate-50 min-h-screen p-4 md:p-10 text-slate-900">
     <div class="max-w-6xl mx-auto">
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Helpdesk Analytics Engine</h1>
-                <p class="text-slate-500">Compare Current vs. Archive Performance</p>
-            </div>
-            <div class="flex items-center bg-white p-2 rounded-lg shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-slate-400 mr-3 uppercase px-2">Data Protection:</span>
-                <span class="text-xs text-emerald-600 font-semibold bg-emerald-50 px-2 py-1 rounded">Local Processing Only</span>
+                <h1 class="text-3xl font-extrabold tracking-tight">Helpdesk Intelligence Dashboard</h1>
+                <p class="text-slate-500">Extrapolating performance, sub-team load, and system trends.</p>
             </div>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors">
-                <label class="block text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">Current Helpdesk Data</label>
-                <input type="file" id="currentFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"/>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <label class="block text-xs font-black text-slate-400 uppercase mb-3">Current Data</label>
+                <input type="file" id="currentFile" accept=".csv" class="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-600 file:text-white cursor-pointer"/>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-orange-300 transition-colors">
-                <label class="block text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">Archive Data</label>
-                <input type="file" id="archiveFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-orange-500 file:text-white hover:file:bg-orange-600 cursor-pointer"/>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <label class="block text-xs font-black text-slate-400 uppercase mb-3">Archive Data</label>
+                <input type="file" id="archiveFile" accept=".csv" class="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-orange-500 file:text-white cursor-pointer"/>
             </div>
         </div>
 
-        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-slate-800 hover:-translate-y-0.5 transition-all mb-12">
-            Generate Comparative Analysis
+        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold shadow-lg hover:scale-[1.01] transition-all mb-10">
+            Run Deep Insight Analysis
         </button>
 
         <div id="dashboard" class="hidden space-y-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border-b-4 border-slate-300">
-                    <p class="text-xs font-black text-slate-400 uppercase mb-1">Total Unique Tickets</p>
-                    <p id="totalCount" class="text-4xl font-black text-slate-900">0</p>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Total Unique Tickets</p>
+                    <p id="totalCount" class="text-2xl font-black">0</p>
                 </div>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border-b-4 border-blue-500">
-                    <p class="text-xs font-black text-blue-400 uppercase mb-1">Active Database</p>
-                    <p id="currentCount" class="text-4xl font-black text-slate-900">0</p>
+                <div id="topIssueCard" class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Top System Impacted</p>
+                    <p id="topSystem" class="text-xl font-bold text-blue-600">-</p>
                 </div>
-                <div class="bg-white p-8 rounded-2xl shadow-sm border-b-4 border-orange-400">
-                    <p class="text-xs font-black text-orange-400 uppercase mb-1">Archive Database</p>
-                    <p id="archiveCount" class="text-4xl font-black text-slate-900">0</p>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Busiest Sub-Team</p>
+                    <p id="topTeam" class="text-xl font-bold text-emerald-600">-</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Archive tickets</p>
+                    <p id="archiveCount" class="text-2xl font-black">0</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 flex items-center">
-                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span> Volume Comparison
-                    </h3>
-                    <div class="h-64"><canvas id="volumeChart"></canvas></div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-bold mb-4">Workload by Sub-Team (Current)</h3>
+                    <div class="h-64"><canvas id="teamChart"></canvas></div>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 flex items-center">
-                        <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span> Priority Breakdown
-                    </h3>
-                    <div class="h-64"><canvas id="priorityChart"></canvas></div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-bold mb-4">System Type Breakdown</h3>
+                    <div class="h-64"><canvas id="systemChart"></canvas></div>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 col-span-1 md:col-span-2">
-                    <h3 class="font-bold text-slate-800 mb-6">Regional Distribution</h3>
-                    <div class="h-80"><canvas id="regionChart"></canvas></div>
-                </div>
+            </div>
+
+            <div class="bg-slate-900 text-white p-8 rounded-3xl">
+                <h3 class="text-xl font-bold mb-4">Description Keyword Frequency</h3>
+                <p class="text-slate-400 text-sm mb-6">Common terms appearing across all ticket descriptions:</p>
+                <div id="keywordCloud" class="flex flex-wrap gap-3">
+                    </div>
             </div>
         </div>
     </div>
@@ -79,130 +78,91 @@
         async function processData() {
             const curFile = document.getElementById('currentFile').files[0];
             const arcFile = document.getElementById('archiveFile').files[0];
-
-            if (!curFile || !arcFile) {
-                alert("Please select both files before analyzing.");
-                return;
-            }
+            if (!curFile || !arcFile) return alert("Upload both files.");
 
             const curRaw = await parseCSV(curFile);
             const arcRaw = await parseCSV(arcFile);
 
-            // SMART FILL: Logic to handle rows where Ticket ID is missing but it's the same ticket
-            const cleanCur = smartFill(curRaw, 'Current');
-            const cleanArc = smartFill(arcRaw, 'Archive');
+            const master = [...smartFill(curRaw, 'Current'), ...smartFill(arcRaw, 'Archive')];
+            const uniqueMaster = deduplicate(master);
 
-            // Unique Ticket Filtering (Deduplicate)
-            const uniqueCur = deduplicate(cleanCur);
-            const uniqueArc = deduplicate(cleanArc);
-
-            renderDashboard([...uniqueCur, ...uniqueArc], uniqueCur.length, uniqueArc.length);
+            renderDashboard(uniqueMaster);
         }
 
         function parseCSV(file) {
-            return new Promise(resolve => {
-                Papa.parse(file, {
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: r => resolve(r.data)
-                });
-            });
+            return new Promise(resolve => Papa.parse(file, {header: true, skipEmptyLines: true, complete: r => resolve(r.data)}));
         }
 
         function smartFill(data, source) {
-            let lastID = null, lastPriority = null, lastRegion = null;
+            let lastID = null, lastTeam = null, lastSys = null;
             return data.map(row => {
-                // Handle different CSV header naming variations
-                const ticketNum = row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID'];
-                
-                if (ticketNum && ticketNum.toString().trim() !== "") {
-                    lastID = ticketNum.toString().trim();
-                    lastPriority = row['Priority Rating'] || 'Unknown';
-                    lastRegion = row['Region'] || 'Unknown';
+                const id = row['Ticket Number'] || row['Ticket Number\u00A0'];
+                if (id && id.trim() !== "") {
+                    lastID = id.trim();
+                    lastTeam = row['Sub Team'] || 'Unassigned';
+                    lastSys = row['System Type'] || 'Unknown';
                 }
-                return { 
-                    ...row, 
-                    TicketID: lastID, 
-                    Priority: lastPriority, 
-                    Region: lastRegion, 
-                    Source: source 
-                };
-            }).filter(r => r.TicketID !== null);
+                return { ...row, TicketID: lastID, SubTeam: lastTeam, SystemType: lastSys, Source: source };
+            }).filter(r => r.TicketID);
         }
 
         function deduplicate(data) {
             const seen = new Set();
-            return data.filter(item => {
-                const k = item.TicketID;
-                return seen.has(k) ? false : seen.add(k);
-            });
+            return data.filter(i => seen.has(i.TicketID) ? false : seen.add(i.TicketID));
         }
 
-        function renderDashboard(master, curLen, arcLen) {
+        function renderDashboard(data) {
             document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('totalCount').innerText = master.length;
-            document.getElementById('currentCount').innerText = curLen;
-            document.getElementById('archiveCount').innerText = arcLen;
+            const currentData = data.filter(d => d.Source === 'Current');
+            
+            // KPIs
+            document.getElementById('totalCount').innerText = data.length;
+            document.getElementById('archiveCount').innerText = data.filter(d => d.Source === 'Archive').length;
+            
+            const teamCounts = countOccurrences(currentData, 'SubTeam');
+            const sysCounts = countOccurrences(data, 'SystemType');
+            
+            document.getElementById('topTeam').innerText = Object.keys(teamCounts)[0] || 'N/A';
+            document.getElementById('topSystem').innerText = (Object.keys(sysCounts)[0] || 'N/A').replace(/[\[\]"]/g, '');
 
-            updateVolumeChart(curLen, arcLen);
-            updatePriorityChart(master);
-            updateRegionChart(master);
+            updateChart('teamChart', 'bar', Object.keys(teamCounts), Object.values(teamCounts), '#10b981');
+            updateChart('systemChart', 'pie', Object.keys(sysCounts), Object.values(sysCounts), ['#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6']);
+            
+            analyzeKeywords(data);
         }
 
-        function updateVolumeChart(cur, arc) {
-            if (charts.volume) charts.volume.destroy();
-            charts.volume = new Chart(document.getElementById('volumeChart'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Current', 'Archive'],
-                    datasets: [{
-                        data: [cur, arc],
-                        backgroundColor: ['#2563eb', '#f97316'],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-            });
+        function countOccurrences(arr, key) {
+            return arr.reduce((acc, curr) => {
+                const val = curr[key];
+                acc[val] = (acc[val] || 0) + 1;
+                return acc;
+            }, {});
         }
 
-        function updatePriorityChart(data) {
-            const priorities = [...new Set(data.map(d => d.Priority))].sort();
-            const curP = priorities.map(p => data.filter(d => d.Priority === p && d.Source === 'Current').length);
-            const arcP = priorities.map(p => data.filter(d => d.Priority === p && d.Source === 'Archive').length);
-
-            if (charts.priority) charts.priority.destroy();
-            charts.priority = new Chart(document.getElementById('priorityChart'), {
-                type: 'bar',
-                data: {
-                    labels: priorities,
-                    datasets: [
-                        { label: 'Current', data: curP, backgroundColor: '#2563eb' },
-                        { label: 'Archive', data: arcP, backgroundColor: '#fb923c' }
-                    ]
-                },
-                options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-            });
-        }
-
-        function updateRegionChart(data) {
-            const regions = [...new Set(data.map(d => d.Region))].filter(r => r !== 'Unknown');
-            const curR = regions.map(r => data.filter(d => d.Region === r && d.Source === 'Current').length);
-            const arcR = regions.map(r => data.filter(d => d.Region === r && d.Source === 'Archive').length);
-
-            if (charts.region) charts.region.destroy();
-            charts.region = new Chart(document.getElementById('regionChart'), {
-                type: 'bar',
-                indexAxis: 'y',
-                data: {
-                    labels: regions,
-                    datasets: [
-                        { label: 'Current', data: curR, backgroundColor: '#2563eb' },
-                        { label: 'Archive', data: arcR, backgroundColor: '#fb923c' }
-                    ]
-                },
+        function updateChart(id, type, labels, data, colors) {
+            if (charts[id]) charts[id].destroy();
+            charts[id] = new Chart(document.getElementById(id), {
+                type: type,
+                data: { labels: labels.map(l => l.substring(0, 15)), datasets: [{ data: data, backgroundColor: colors }] },
                 options: { maintainAspectRatio: false }
             });
+        }
+
+        function analyzeKeywords(data) {
+            const text = data.map(d => d.Description).join(' ').toLowerCase();
+            const words = text.match(/\b(\w{4,})\b/g); // Only words 4 chars or longer
+            const stopWords = ['this', 'that', 'from', 'with', 'please', 'thank', 'have'];
+            
+            const freq = {};
+            words.forEach(w => { if(!stopWords.includes(w)) freq[w] = (freq[w] || 0) + 1; });
+            
+            const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 15);
+            const container = document.getElementById('keywordCloud');
+            container.innerHTML = sorted.map(([word, count]) => 
+                `<span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-full text-sm font-medium">
+                    ${word} <span class="text-blue-400 ml-2">${count}</span>
+                </span>`
+            ).join('');
         }
     </script>
 </body>
