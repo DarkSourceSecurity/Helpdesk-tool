@@ -39,24 +39,24 @@
         <div id="dashboard" class="hidden space-y-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-300">
-                    <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Unique</p>
-                    <p id="totalCount" class="text-3xl font-black text-slate-900">0</p>
+                    <p class="text-[10px] font-black text-slate-400 uppercase mb-1 text-center">Total Unique</p>
+                    <p id="totalCount" class="text-3xl font-black text-slate-900 text-center">0</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500">
-                    <p class="text-[10px] font-black text-blue-400 uppercase mb-1">Active DB</p>
-                    <p id="currentCount" class="text-3xl font-black text-slate-900">0</p>
+                    <p class="text-[10px] font-black text-blue-400 uppercase mb-1 text-center">Active DB</p>
+                    <p id="currentCount" class="text-3xl font-black text-slate-900 text-center">0</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400">
-                    <p class="text-[10px] font-black text-orange-400 uppercase mb-1">Archive DB</p>
-                    <p id="archiveCount" class="text-3xl font-black text-slate-900">0</p>
+                    <p class="text-[10px] font-black text-orange-400 uppercase mb-1 text-center">Archive DB</p>
+                    <p id="archiveCount" class="text-3xl font-black text-slate-900 text-center">0</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-purple-500">
-                    <p class="text-[10px] font-black text-purple-400 uppercase mb-1">Top System</p>
-                    <p id="topSystem" class="text-lg font-bold text-slate-800">-</p>
+                    <p class="text-[10px] font-black text-purple-400 uppercase mb-1 text-center">Top System</p>
+                    <p id="topSystem" class="text-lg font-bold text-slate-800 text-center">-</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500">
-                    <p class="text-[10px] font-black text-emerald-400 uppercase mb-1">Busiest Team</p>
-                    <p id="topTeam" class="text-lg font-bold text-slate-800">-</p>
+                    <p class="text-[10px] font-black text-emerald-400 uppercase mb-1 text-center">Busiest Team</p>
+                    <p id="topTeam" class="text-lg font-bold text-slate-800 text-center">-</p>
                 </div>
             </div>
 
@@ -77,25 +77,24 @@
 
             <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl">
                 <h3 class="text-xl font-bold mb-2 uppercase tracking-tight">Keyword Insights</h3>
-                <p class="text-slate-400 mb-6 text-sm">Recurring technical terms detected in descriptions:</p>
+                <p class="text-slate-400 mb-6 text-sm">Common terms detected in descriptions:</p>
                 <div id="keywordCloud" class="flex flex-wrap gap-3"></div>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-slate-800 mb-6">Master Ticket List (Cleaned)</h3>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <h3 class="font-bold text-slate-800 mb-6 uppercase text-sm tracking-widest">Master Ticket List (Unique)</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold">
+                        <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-bold">
                             <tr>
                                 <th class="px-4 py-3">ID</th>
                                 <th class="px-4 py-3">Source</th>
+                                <th class="px-4 py-3">System Type</th>
                                 <th class="px-4 py-3">Region</th>
-                                <th class="px-4 py-3">Priority</th>
-                                <th class="px-4 py-3">Description Snippet</th>
+                                <th class="px-4 py-3">Description</th>
                             </tr>
                         </thead>
-                        <tbody id="dataTable" class="divide-y divide-slate-100 text-slate-600">
-                            </tbody>
+                        <tbody id="dataTable" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
@@ -108,7 +107,7 @@
         async function processData() {
             const curFile = document.getElementById('currentFile').files[0];
             const arcFile = document.getElementById('archiveFile').files[0];
-            if (!curFile || !arcFile) { alert("Please select both files."); return; }
+            if (!curFile || !arcFile) { alert("Select both files."); return; }
 
             const curRaw = await parseCSV(curFile);
             const arcRaw = await parseCSV(arcFile);
@@ -117,10 +116,7 @@
             const cleanArc = smartFill(arcRaw, 'Archive');
 
             const master = deduplicate([...cleanCur, ...cleanArc]);
-            renderDashboard(master, 
-                master.filter(d => d.Source === 'Current').length, 
-                master.filter(d => d.Source === 'Archive').length
-            );
+            renderDashboard(master);
         }
 
         function parseCSV(file) {
@@ -129,107 +125,125 @@
 
         function smartFill(data, source) {
             let lastID = null, lastPriority = null, lastRegion = null, lastTeam = null, lastSys = null;
+            
+            // Helper to find column keys safely
+            const findK = (q) => Object.keys(data[0] || {}).find(k => k.toLowerCase().includes(q.toLowerCase()));
+            const idKey = findK('ticket number') || findK('id');
+            const sysKey = findK('system type');
+            const regKey = findK('region');
+            const priKey = findK('priority');
+            const teamKey = findK('sub team');
+            const descKey = findK('description');
+
             return data.map(row => {
-                // Fuzzy header matching
-                const findKey = (q) => Object.keys(row).find(k => k.toLowerCase().includes(q.toLowerCase()));
-                const idK = findKey('ticket number') || findKey('id');
-                const priK = findKey('priority');
-                const regK = findKey('region');
-                const teamK = findKey('sub team');
-                const sysK = findKey('system type');
-                
-                const ticketNum = row[idK];
-                if (ticketNum && ticketNum.toString().trim() !== "") {
-                    lastID = ticketNum.toString().trim();
-                    lastPriority = row[priK] || 'Unknown';
-                    lastRegion = row[regK] || 'Unknown';
-                    lastTeam = row[teamK] || 'Unassigned';
-                    lastSys = (row[sysK] || 'Unknown').replace(/[\[\]"]/g, '');
+                const valID = row[idKey];
+                if (valID && valID.toString().trim() !== "") {
+                    lastID = valID.toString().trim();
+                    lastPriority = row[priKey] || 'P3';
+                    lastRegion = row[regKey] || 'Unknown';
+                    lastTeam = row[teamKey] || 'Unassigned';
+                    
+                    // --- SANITIZER FOR "8888" ---
+                    // If System Type is empty or is a number (like 8888), we don't update lastSys
+                    let rawSys = row[sysKey] ? row[sysKey].toString().replace(/[\[\]"]/g, '').trim() : "";
+                    if (rawSys !== "" && isNaN(rawSys)) {
+                        lastSys = rawSys;
+                    } else if (!lastSys) {
+                        lastSys = "Other";
+                    }
                 }
-                return { ...row, TicketID: lastID, Priority: lastPriority, Region: lastRegion, SubTeam: lastTeam, SystemType: lastSys, Source: source };
+                return { 
+                    TicketID: lastID, 
+                    Priority: lastPriority, 
+                    Region: lastRegion, 
+                    SubTeam: lastTeam, 
+                    SystemType: lastSys, 
+                    Desc: row[descKey] || "",
+                    Source: source 
+                };
             }).filter(r => r.TicketID !== null);
         }
 
         function deduplicate(data) {
             const map = new Map();
             data.forEach(item => {
-                const descK = Object.keys(item).find(k => k.toLowerCase().includes('description'));
                 if(!map.has(item.TicketID)) {
-                    map.set(item.TicketID, {...item, FullDesc: item[descK] || ""});
+                    map.set(item.TicketID, {...item, FullDesc: item.Desc});
                 } else {
-                    map.get(item.TicketID).FullDesc += " " + (item[descK] || "");
+                    map.get(item.TicketID).FullDesc += " " + item.Desc;
                 }
             });
             return Array.from(map.values());
         }
 
-        function renderDashboard(master, curLen, arcLen) {
+        function renderDashboard(master) {
             document.getElementById('dashboard').classList.remove('hidden');
+            const current = master.filter(d => d.Source === 'Current');
+            const archive = master.filter(d => d.Source === 'Archive');
+
             document.getElementById('totalCount').innerText = master.length;
-            document.getElementById('currentCount').innerText = curLen;
-            document.getElementById('archiveCount').innerText = arcLen;
+            document.getElementById('currentCount').innerText = current.length;
+            document.getElementById('archiveCount').innerText = archive.length;
 
-            const sysFreq = countOcc(master, 'SystemType');
-            const teamFreq = countOcc(master.filter(d => d.Source === 'Current'), 'SubTeam');
-            document.getElementById('topSystem').innerText = Object.keys(sysFreq)[0] || 'N/A';
-            document.getElementById('topTeam').innerText = Object.keys(teamFreq)[0] || 'N/A';
+            const sysCounts = countOcc(master, 'SystemType');
+            const teamCounts = countOcc(current, 'SubTeam');
+            document.getElementById('topSystem').innerText = Object.keys(sysCounts)[0] || 'N/A';
+            document.getElementById('topTeam').innerText = Object.keys(teamCounts)[0] || 'N/A';
 
-            updateChart('volumeChart', 'doughnut', ['Current', 'Archive'], [curLen, arcLen], ['#2563eb', '#f97316']);
-            
-            const priorities = [...new Set(master.map(d => d.Priority))].sort();
-            updateBarChart('priorityChart', priorities, master);
-            
+            updateVolChart(current.length, archive.length);
+            updateBarChart('priorityChart', master, 'Priority');
             analyzeKeywords(master);
             renderTable(master);
         }
 
         function countOcc(arr, key) {
             const c = {};
-            arr.forEach(i => { c[i[key]] = (c[i[key]] || 0) + 1; });
+            arr.forEach(i => { if(i[key]) c[i[key]] = (c[i[key]] || 0) + 1; });
             return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1]));
         }
 
-        function updateChart(id, type, labels, data, colors) {
-            if (charts[id]) charts[id].destroy();
-            charts[id] = new Chart(document.getElementById(id), {
-                type: type,
-                data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0 }] },
-                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        function updateVolChart(cur, arc) {
+            if (charts.vol) charts.vol.destroy();
+            charts.vol = new Chart(document.getElementById('volumeChart'), {
+                type: 'doughnut',
+                data: { labels: ['Current', 'Archive'], datasets: [{ data:[cur, arc], backgroundColor:['#2563eb','#f97316'] }] },
+                options: { maintainAspectRatio:false, plugins:{legend:{position:'bottom'}} }
             });
         }
 
-        function updateBarChart(id, labels, data) {
-            const cur = labels.map(l => data.filter(d => d.Priority === l && d.Source === 'Current').length);
-            const arc = labels.map(l => data.filter(d => d.Priority === l && d.Source === 'Archive').length);
+        function updateBarChart(id, data, key) {
+            const labels = [...new Set(data.map(d => d[key]))].sort();
+            const curSet = labels.map(l => data.filter(d => d[key] === l && d.Source === 'Current').length);
+            const arcSet = labels.map(l => data.filter(d => d[key] === l && d.Source === 'Archive').length);
             if (charts[id]) charts[id].destroy();
             charts[id] = new Chart(document.getElementById(id), {
                 type: 'bar',
-                data: { labels, datasets: [{ label: 'Current', data: cur, backgroundColor: '#2563eb' }, { label: 'Archive', data: arc, backgroundColor: '#fb923c' }] },
-                options: { maintainAspectRatio: false }
+                data: { labels, datasets: [{label:'Current', data:curSet, backgroundColor:'#2563eb'}, {label:'Archive', data:arcSet, backgroundColor:'#fb923c'}] },
+                options: { maintainAspectRatio:false }
             });
         }
 
         function analyzeKeywords(data) {
             const text = data.map(d => d.FullDesc).join(' ').toLowerCase();
             const words = text.match(/\b(\w{5,})\b/g) || [];
-            const stop = ['please','thank','would','could','there','evening'];
+            const stop = ['please','thank','would','could','there','evening','hello'];
             const freq = {};
             words.forEach(w => { if(!stop.includes(w)) freq[w] = (freq[w] || 0) + 1; });
-            const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 15);
+            const sorted = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0, 15);
             document.getElementById('keywordCloud').innerHTML = sorted.map(([w, c]) => 
-                `<span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-sm font-medium tracking-tight">${w.toUpperCase()} <span class="text-blue-400 ml-1 text-xs">${c}</span></span>`
+                `<span class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-widest">${w} <span class="text-blue-400 ml-1">${c}</span></span>`
             ).join('');
         }
 
         function renderTable(data) {
             const tbody = document.getElementById('dataTable');
-            tbody.innerHTML = data.map(row => `
-                <tr class="hover:bg-slate-50">
-                    <td class="px-4 py-3 font-bold text-slate-900">${row.TicketID}</td>
-                    <td class="px-4 py-3"><span class="px-2 py-1 rounded text-[10px] font-bold ${row.Source === 'Current' ? 'bg-blue-100 text-blue-700' : 'bg-orange-100 text-orange-700'}">${row.Source}</span></td>
-                    <td class="px-4 py-3">${row.Region}</td>
-                    <td class="px-4 py-3">${row.Priority}</td>
-                    <td class="px-4 py-3 truncate max-w-xs">${row.FullDesc.substring(0, 60)}...</td>
+            tbody.innerHTML = data.slice(0, 50).map(r => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-4 py-4 font-bold text-slate-800">${r.TicketID}</td>
+                    <td class="px-4 py-4"><span class="px-2 py-1 rounded-full text-[10px] font-black uppercase ${r.Source === 'Current' ? 'bg-blue-100 text-blue-600' : 'bg-orange-100 text-orange-600'}">${r.Source}</span></td>
+                    <td class="px-4 py-4 font-medium">${r.SystemType}</td>
+                    <td class="px-4 py-4 text-slate-500">${r.Region}</td>
+                    <td class="px-4 py-4 text-slate-400 truncate max-w-xs">${r.FullDesc.substring(0, 60)}...</td>
                 </tr>
             `).join('');
         }
