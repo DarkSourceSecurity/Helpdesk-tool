@@ -2,146 +2,184 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Helpdesk Debugger & Analyzer</title>
+    <title>Helpdesk Intelligence Tool</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-100 min-h-screen p-4 md:p-10 text-slate-900 font-sans">
-    <div class="max-w-5xl mx-auto">
-        <header class="mb-8 border-b border-slate-300 pb-6">
-            <h1 class="text-3xl font-black text-slate-800 uppercase tracking-tighter">Diagnostic Helpdesk Tool</h1>
-            <p class="text-slate-600">Identifying headers and processing multi-line data...</p>
+<body class="bg-slate-50 min-h-screen p-6 font-sans text-slate-900">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-10">
+            <h1 class="text-4xl font-black tracking-tight text-slate-800">HELPDESK ANALYZER</h1>
+            <p class="text-slate-500 font-medium uppercase text-sm tracking-widest">Comparative Data & Extrapolation Engine</p>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div class="bg-white p-4 rounded-lg shadow-sm border">
-                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Current CSV</label>
-                <input type="file" id="currentFile" accept=".csv" class="w-full text-sm"/>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="bg-white p-8 rounded-3xl shadow-sm border-2 border-slate-100 transition-all hover:border-blue-500">
+                <label class="block text-xs font-black text-slate-400 uppercase mb-4">Live Helpdesk File</label>
+                <input type="file" id="curFile" accept=".csv" class="w-full text-sm"/>
             </div>
-            <div class="bg-white p-4 rounded-lg shadow-sm border">
-                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Archive CSV</label>
-                <input type="file" id="archiveFile" accept=".csv" class="w-full text-sm"/>
+            <div class="bg-white p-8 rounded-3xl shadow-sm border-2 border-slate-100 transition-all hover:border-orange-500">
+                <label class="block text-xs font-black text-slate-400 uppercase mb-4">Archive Helpdesk File</label>
+                <input type="file" id="arcFile" accept=".csv" class="w-full text-sm"/>
             </div>
         </div>
 
-        <button onclick="processData()" class="w-full bg-blue-600 text-white py-4 rounded-lg font-bold shadow-lg hover:bg-blue-700 mb-8 transition-all">
-            Process & Debug Data
+        <button onclick="runAnalysis()" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-bold text-xl shadow-2xl hover:bg-slate-800 transition-all active:scale-95 mb-12">
+            RUN FULL ANALYSIS
         </button>
 
-        <div id="debugLog" class="bg-black text-lime-400 p-4 rounded-lg font-mono text-xs mb-8 min-h-[100px] overflow-y-auto shadow-inner">
-            > System Ready. Upload files to begin...
-        </div>
+        <div id="dashboard" class="hidden space-y-10 pb-20">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Unique Tickets</p>
+                    <p id="statTotal" class="text-4xl font-black text-slate-900">0</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Top System</p>
+                    <p id="statSystem" class="text-2xl font-black text-blue-600">-</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Busiest Team</p>
+                    <p id="statTeam" class="text-2xl font-black text-emerald-600">-</p>
+                </div>
+            </div>
 
-        <div id="results" class="hidden space-y-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="font-bold text-slate-500 uppercase text-xs mb-4">Volume Distribution</h3>
-                    <div class="h-64"><canvas id="volChart"></canvas></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <h3 class="font-black text-slate-800 mb-6 uppercase text-sm">Volume Trend</h3>
+                    <div class="h-64"><canvas id="chartVol"></canvas></div>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="font-bold text-slate-500 uppercase text-xs mb-4">Top Keywords</h3>
-                    <div id="keywords" class="flex flex-wrap gap-2 pt-4"></div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <h3 class="font-black text-slate-800 mb-6 uppercase text-sm">Priority Breakdown</h3>
+                    <div class="h-64"><canvas id="chartPri"></canvas></div>
                 </div>
+            </div>
+
+            <div class="bg-slate-900 text-white p-10 rounded-[2.5rem] shadow-2xl">
+                <h3 class="text-2xl font-black mb-2 uppercase tracking-tight">Keyword Extrapolation</h3>
+                <p class="text-slate-400 mb-8 text-sm">Most common technical terms found in ticket descriptions:</p>
+                <div id="keywords" class="flex flex-wrap gap-3"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const log = (msg) => {
-            const el = document.getElementById('debugLog');
-            el.innerHTML += `<br>> ${msg}`;
-            el.scrollTop = el.scrollHeight;
-        };
+        let charts = {};
 
-        async function processData() {
-            try {
-                const curFile = document.getElementById('currentFile').files[0];
-                const arcFile = document.getElementById('archiveFile').files[0];
-                if (!curFile || !arcFile) return alert("Select both files.");
+        async function runAnalysis() {
+            const f1 = document.getElementById('curFile').files[0];
+            const f2 = document.getElementById('arcFile').files[0];
+            if(!f1 || !f2) return alert("Please upload both files.");
 
-                log("Reading files...");
-                const curRaw = await parseCSV(curFile);
-                const arcRaw = await parseCSV(arcFile);
+            // 1. Parse CSVs
+            const curData = await parse(f1);
+            const arcData = await parse(f2);
 
-                log(`Headers detected in Current: [${Object.keys(curRaw[0]).join(', ')}]`);
-                
-                const cleanCur = smartProcess(curRaw, 'Current');
-                const cleanArc = smartProcess(arcRaw, 'Archive');
+            // 2. Smart Process (Handles multi-line and headers)
+            const processedCur = smartProcess(curData, 'Current');
+            const processedArc = smartProcess(arcData, 'Archive');
 
-                const master = [...cleanCur, ...cleanArc];
-                log(`Unique Tickets identified: ${master.length}`);
+            // 3. Deduplicate to Unique Tickets
+            const master = deduplicate([...processedCur, ...processedArc]);
 
-                if (master.length > 0) {
-                    showDashboard(master);
-                } else {
-                    log("CRITICAL: 0 tickets identified. Check if 'Ticket Number' column exists.");
-                }
-            } catch (e) {
-                log(`ERROR: ${e.message}`);
-            }
+            // 4. Render
+            render(master);
+            document.getElementById('dashboard').classList.remove('hidden');
         }
 
-        function parseCSV(file) {
-            return new Promise(resolve => Papa.parse(file, {header: true, skipEmptyLines: true, complete: r => resolve(r.data)}));
+        function parse(file) {
+            return new Promise(res => Papa.parse(file, {header:true, skipEmptyLines:true, complete: r => res(r.data)}));
         }
 
         function smartProcess(data, source) {
-            // Find keys regardless of hidden characters
-            const find = (q) => Object.keys(data[0]).find(k => k.toLowerCase().replace(/[^a-z]/g, '').includes(q));
+            // Find columns by fuzzy name
+            const keys = Object.keys(data[0] || {});
+            const find = q => keys.find(k => k.toLowerCase().includes(q));
             
-            const idK = find('ticketnumber') || find('id');
+            const idK = find('ticket number') || find('id');
+            const teamK = find('sub team');
+            const sysK = find('system type');
+            const priK = find('priority');
             const descK = find('description');
-            
-            log(`Using Column for Ticket ID: "${idK}"`);
 
-            let lastID = null;
-            const unique = new Map();
+            let lastID = null, lastTeam = null, lastSys = null, lastPri = null;
 
-            data.forEach(row => {
-                const id = row[idK];
-                if (id && id.toString().trim() !== "") {
-                    lastID = id.toString().trim();
+            return data.map(row => {
+                const rawID = row[idK];
+                if(rawID && rawID.toString().trim() !== "") {
+                    lastID = rawID.toString().trim();
+                    lastTeam = row[teamK] || "Unknown";
+                    lastSys = (row[sysK] || "Other").replace(/[\[\]"]/g, '');
+                    lastPri = row[priK] || "P3";
                 }
-                
-                if (lastID) {
-                    if (!unique.has(lastID)) {
-                        unique.set(lastID, { ID: lastID, Desc: "", Source: source });
-                    }
-                    const existing = unique.get(lastID);
-                    existing.Desc += " " + (row[descK] || "");
-                }
-            });
-            return Array.from(unique.values());
+                return { 
+                    ID: lastID, 
+                    Team: lastTeam, 
+                    System: lastSys, 
+                    Priority: lastPri, 
+                    Desc: row[descK] || "", 
+                    Source: source 
+                };
+            }).filter(r => r.ID);
         }
 
-        function showDashboard(data) {
-            document.getElementById('results').classList.remove('hidden');
-            
-            // Chart
-            if (window.myChart) window.myChart.destroy();
-            const curN = data.filter(d => d.Source === 'Current').length;
-            const arcN = data.filter(d => d.Source === 'Archive').length;
-            
-            window.myChart = new Chart(document.getElementById('volChart'), {
-                type: 'bar',
-                data: {
-                    labels: ['Current', 'Archive'],
-                    datasets: [{ label: 'Unique Tickets', data: [curN, arcN], backgroundColor: ['#2563eb', '#f97316'] }]
-                },
-                options: { maintainAspectRatio: false }
+        function deduplicate(data) {
+            const map = new Map();
+            data.forEach(item => {
+                if(!map.has(item.ID)) {
+                    map.set(item.ID, {...item});
+                } else {
+                    map.get(item.ID).Desc += " " + item.Desc; // Append descriptions for keyword mining
+                }
             });
+            return Array.from(map.values());
+        }
+
+        function render(data) {
+            const current = data.filter(d => d.Source === 'Current');
+            const archive = data.filter(d => d.Source === 'Archive');
+
+            // KPI Stats
+            document.getElementById('statTotal').innerText = data.length;
+            
+            const sysCounts = count(data, 'System');
+            const teamCounts = count(current, 'Team');
+            document.getElementById('statSystem').innerText = Object.keys(sysCounts)[0] || 'N/A';
+            document.getElementById('statTeam').innerText = Object.keys(teamCounts)[0] || 'N/A';
+
+            // Charts
+            makeChart('chartVol', 'pie', ['Current', 'Archive'], [current.length, archive.length], ['#3b82f6', '#f97316']);
+            
+            const priorities = [...new Set(data.map(d => d.Priority))].sort();
+            const priData = priorities.map(p => data.filter(d => d.Priority === p).length);
+            makeChart('chartPri', 'bar', priorities, priData, '#6366f1');
 
             // Keywords
             const text = data.map(d => d.Desc).join(' ').toLowerCase();
             const words = text.match(/\b(\w{5,})\b/g) || [];
             const freq = {};
-            words.forEach(w => { if(!['please','thank','regards','hello'].includes(w)) freq[w] = (freq[w]||0)+1; });
-            const sorted = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0, 10);
+            words.forEach(w => { if(!['please','thank','evening','would'].includes(w)) freq[w] = (freq[w]||0)+1; });
+            const sorted = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0, 15);
             
             document.getElementById('keywords').innerHTML = sorted.map(([w, c]) => 
-                `<span class="bg-slate-200 px-3 py-1 rounded-full text-xs font-bold">${w} (${c})</span>`
+                `<span class="bg-slate-800 border border-slate-700 px-5 py-2.5 rounded-2xl text-sm font-bold">${w.toUpperCase()} <span class="text-blue-400 ml-2 text-xs">${c}</span></span>`
             ).join('');
+        }
+
+        function count(arr, key) {
+            const c = {};
+            arr.forEach(i => c[i[key]] = (c[i[key]] || 0) + 1);
+            return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1]));
+        }
+
+        function makeChart(id, type, labels, data, colors) {
+            if(charts[id]) charts[id].destroy();
+            charts[id] = new Chart(document.getElementById(id), {
+                type: type,
+                data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 8 }] },
+                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
         }
     </script>
 </body>
