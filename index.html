@@ -3,57 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Helpdesk Statistics Tool</title>
+    <title>Helpdesk Pro Analyzer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 p-8">
+<body class="bg-slate-50 min-h-screen p-4 md:p-10">
     <div class="max-w-6xl mx-auto">
-        <header class="mb-10 text-center">
-            <h1 class="text-4xl font-bold text-slate-800">Helpdesk Data Insights</h1>
-            <p class="text-slate-500 mt-2">Upload your Current and Archive CSVs to compare performance.</p>
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Helpdesk Analytics Engine</h1>
+                <p class="text-slate-500">Compare Current vs. Archive Performance</p>
+            </div>
+            <div class="flex items-center bg-white p-2 rounded-lg shadow-sm border border-slate-200">
+                <span class="text-xs font-bold text-slate-400 mr-3 uppercase px-2">Data Protection:</span>
+                <span class="text-xs text-emerald-600 font-semibold bg-emerald-50 px-2 py-1 rounded">Local Processing Only</span>
+            </div>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">1. Current Helpdesk CSV</label>
-                <input type="file" id="currentFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"/>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors">
+                <label class="block text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">Current Helpdesk Data</label>
+                <input type="file" id="currentFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer"/>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">2. Archive Helpdesk CSV</label>
-                <input type="file" id="archiveFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"/>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-orange-300 transition-colors">
+                <label class="block text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">Archive Data</label>
+                <input type="file" id="archiveFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-orange-500 file:text-white hover:file:bg-orange-600 cursor-pointer"/>
             </div>
         </div>
 
-        <div class="text-center mb-10">
-            <button onclick="processData()" class="bg-slate-800 text-white px-8 py-3 rounded-lg font-bold hover:bg-slate-700 transition">Analyze Statistics</button>
-        </div>
+        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-slate-800 hover:-translate-y-0.5 transition-all mb-12">
+            Generate Comparative Analysis
+        </button>
 
-        <div id="dashboard" class="hidden">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
-                    <p class="text-sm text-gray-500 uppercase font-bold">Total Unique Tickets</p>
-                    <p id="totalCount" class="text-3xl font-bold text-gray-800">0</p>
+        <div id="dashboard" class="hidden space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border-b-4 border-slate-300">
+                    <p class="text-xs font-black text-slate-400 uppercase mb-1">Total Unique Tickets</p>
+                    <p id="totalCount" class="text-4xl font-black text-slate-900">0</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-emerald-500">
-                    <p class="text-sm text-gray-500 uppercase font-bold">Current Period</p>
-                    <p id="currentCount" class="text-3xl font-bold text-gray-800">0</p>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border-b-4 border-blue-500">
+                    <p class="text-xs font-black text-blue-400 uppercase mb-1">Active Database</p>
+                    <p id="currentCount" class="text-4xl font-black text-slate-900">0</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-orange-500">
-                    <p class="text-sm text-gray-500 uppercase font-bold">Archive Period</p>
-                    <p id="archiveCount" class="text-3xl font-bold text-gray-800">0</p>
+                <div class="bg-white p-8 rounded-2xl shadow-sm border-b-4 border-orange-400">
+                    <p class="text-xs font-black text-orange-400 uppercase mb-1">Archive Database</p>
+                    <p id="archiveCount" class="text-4xl font-black text-slate-900">0</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="font-bold mb-4 text-gray-700">Volume Comparison</h3>
-                    <canvas id="volumeChart"></canvas>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-slate-800 mb-6 flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span> Volume Comparison
+                    </h3>
+                    <div class="h-64"><canvas id="volumeChart"></canvas></div>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="font-bold mb-4 text-gray-700">Priority Distribution</h3>
-                    <canvas id="priorityChart"></canvas>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-slate-800 mb-6 flex items-center">
+                        <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span> Priority Breakdown
+                    </h3>
+                    <div class="h-64"><canvas id="priorityChart"></canvas></div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 col-span-1 md:col-span-2">
+                    <h3 class="font-bold text-slate-800 mb-6">Regional Distribution</h3>
+                    <div class="h-80"><canvas id="regionChart"></canvas></div>
                 </div>
             </div>
         </div>
@@ -67,18 +81,22 @@
             const arcFile = document.getElementById('archiveFile').files[0];
 
             if (!curFile || !arcFile) {
-                alert("Please upload both files first!");
+                alert("Please select both files before analyzing.");
                 return;
             }
 
-            const curData = await parseCSV(curFile);
-            const arcData = await parseCSV(arcFile);
+            const curRaw = await parseCSV(curFile);
+            const arcRaw = await parseCSV(arcFile);
 
-            const cleanedCur = cleanData(curData, 'Current');
-            const cleanedArc = cleanData(arcData, 'Archive');
+            // SMART FILL: Logic to handle rows where Ticket ID is missing but it's the same ticket
+            const cleanCur = smartFill(curRaw, 'Current');
+            const cleanArc = smartFill(arcRaw, 'Archive');
 
-            const master = [...cleanedCur, ...cleanedArc];
-            renderDashboard(master, cleanedCur.length, cleanedArc.length);
+            // Unique Ticket Filtering (Deduplicate)
+            const uniqueCur = deduplicate(cleanCur);
+            const uniqueArc = deduplicate(cleanArc);
+
+            renderDashboard([...uniqueCur, ...uniqueArc], uniqueCur.length, uniqueArc.length);
         }
 
         function parseCSV(file) {
@@ -86,67 +104,104 @@
                 Papa.parse(file, {
                     header: true,
                     skipEmptyLines: true,
-                    complete: results => resolve(results.data)
+                    complete: r => resolve(r.data)
                 });
             });
         }
 
-        function cleanData(data, source) {
-            // Filter for rows that actually have a Ticket Number (ignores continuation rows for stats)
-            return data
-                .filter(row => {
-                    const ticketNum = row['Ticket Number'] || row['Ticket Number\u00A0'];
-                    return ticketNum && ticketNum.trim() !== "";
-                })
-                .map(row => ({
-                    ...row,
-                    Source: source,
-                    Priority: row['Priority Rating'] || 'Unknown'
-                }));
+        function smartFill(data, source) {
+            let lastID = null, lastPriority = null, lastRegion = null;
+            return data.map(row => {
+                // Handle different CSV header naming variations
+                const ticketNum = row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID'];
+                
+                if (ticketNum && ticketNum.toString().trim() !== "") {
+                    lastID = ticketNum.toString().trim();
+                    lastPriority = row['Priority Rating'] || 'Unknown';
+                    lastRegion = row['Region'] || 'Unknown';
+                }
+                return { 
+                    ...row, 
+                    TicketID: lastID, 
+                    Priority: lastPriority, 
+                    Region: lastRegion, 
+                    Source: source 
+                };
+            }).filter(r => r.TicketID !== null);
         }
 
-        function renderDashboard(data, curSize, arcSize) {
-            document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('totalCount').innerText = data.length;
-            document.getElementById('currentCount').innerText = curSize;
-            document.getElementById('archiveCount').innerText = arcSize;
+        function deduplicate(data) {
+            const seen = new Set();
+            return data.filter(item => {
+                const k = item.TicketID;
+                return seen.has(k) ? false : seen.add(k);
+            });
+        }
 
-            updateVolumeChart(curSize, arcSize);
-            updatePriorityChart(data);
+        function renderDashboard(master, curLen, arcLen) {
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('totalCount').innerText = master.length;
+            document.getElementById('currentCount').innerText = curLen;
+            document.getElementById('archiveCount').innerText = arcLen;
+
+            updateVolumeChart(curLen, arcLen);
+            updatePriorityChart(master);
+            updateRegionChart(master);
         }
 
         function updateVolumeChart(cur, arc) {
             if (charts.volume) charts.volume.destroy();
-            const ctx = document.getElementById('volumeChart').getContext('2d');
-            charts.volume = new Chart(ctx, {
-                type: 'bar',
+            charts.volume = new Chart(document.getElementById('volumeChart'), {
+                type: 'doughnut',
                 data: {
                     labels: ['Current', 'Archive'],
                     datasets: [{
-                        label: 'Tickets',
                         data: [cur, arc],
-                        backgroundColor: ['#3b82f6', '#f97316']
+                        backgroundColor: ['#2563eb', '#f97316'],
+                        borderWidth: 0,
+                        hoverOffset: 10
                     }]
-                }
+                },
+                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
             });
         }
 
         function updatePriorityChart(data) {
-            const priorities = [...new Set(data.map(d => d.Priority))];
-            const currentP = priorities.map(p => data.filter(d => d.Priority === p && d.Source === 'Current').length);
-            const archiveP = priorities.map(p => data.filter(d => d.Priority === p && d.Source === 'Archive').length);
+            const priorities = [...new Set(data.map(d => d.Priority))].sort();
+            const curP = priorities.map(p => data.filter(d => d.Priority === p && d.Source === 'Current').length);
+            const arcP = priorities.map(p => data.filter(d => d.Priority === p && d.Source === 'Archive').length);
 
             if (charts.priority) charts.priority.destroy();
-            const ctx = document.getElementById('priorityChart').getContext('2d');
-            charts.priority = new Chart(ctx, {
+            charts.priority = new Chart(document.getElementById('priorityChart'), {
                 type: 'bar',
                 data: {
                     labels: priorities,
                     datasets: [
-                        { label: 'Current', data: currentP, backgroundColor: '#3b82f6' },
-                        { label: 'Archive', data: archiveP, backgroundColor: '#f97316' }
+                        { label: 'Current', data: curP, backgroundColor: '#2563eb' },
+                        { label: 'Archive', data: arcP, backgroundColor: '#fb923c' }
                     ]
-                }
+                },
+                options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        function updateRegionChart(data) {
+            const regions = [...new Set(data.map(d => d.Region))].filter(r => r !== 'Unknown');
+            const curR = regions.map(r => data.filter(d => d.Region === r && d.Source === 'Current').length);
+            const arcR = regions.map(r => data.filter(d => d.Region === r && d.Source === 'Archive').length);
+
+            if (charts.region) charts.region.destroy();
+            charts.region = new Chart(document.getElementById('regionChart'), {
+                type: 'bar',
+                indexAxis: 'y',
+                data: {
+                    labels: regions,
+                    datasets: [
+                        { label: 'Current', data: curR, backgroundColor: '#2563eb' },
+                        { label: 'Archive', data: arcR, backgroundColor: '#fb923c' }
+                    ]
+                },
+                options: { maintainAspectRatio: false }
             });
         }
     </script>
