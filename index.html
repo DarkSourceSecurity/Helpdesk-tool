@@ -13,11 +13,11 @@
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Helpdesk Analytics Engine</h1>
-                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs">Verified Count Logic (30k+) + Quarterly Insights</p>
+                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs">Adaptive Logic Engine (Verified 30k+)</p>
             </div>
             <div class="flex items-center bg-white p-2 rounded-lg shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-slate-400 mr-3 uppercase px-2 border-r border-slate-100">Privacy</span>
-                <span class="text-[10px] text-emerald-600 font-black bg-emerald-50 px-2 py-1 rounded uppercase tracking-tighter">100% Local Processing</span>
+                <span class="text-xs font-bold text-slate-400 mr-3 uppercase px-2 border-r border-slate-100">Status</span>
+                <span id="processStatus" class="text-[10px] text-blue-600 font-black bg-blue-50 px-2 py-1 rounded uppercase tracking-tighter">Ready for Data</span>
             </div>
         </header>
 
@@ -38,67 +38,35 @@
 
         <div id="dashboard" class="hidden space-y-8 pb-20">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-300 text-center">
-                    <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Unique</p>
-                    <p id="totalCount" class="text-3xl font-black text-slate-900">0</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500 text-center">
-                    <p class="text-[10px] font-black text-blue-400 uppercase mb-1 text-center">Active DB</p>
-                    <p id="currentCount" class="text-3xl font-black text-slate-900">0</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400 text-center">
-                    <p class="text-[10px] font-black text-orange-400 uppercase mb-1 text-center">Archive DB</p>
-                    <p id="archiveCount" class="text-3xl font-black text-slate-900">0</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-purple-500 text-center">
-                    <p class="text-[10px] font-black text-purple-400 uppercase mb-1 text-center">Top System</p>
-                    <p id="topSystem" class="text-lg font-bold text-slate-800">-</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500 text-center">
-                    <p class="text-[10px] font-black text-emerald-400 uppercase mb-1 text-center">Lead Contributor</p>
-                    <p id="topEngineer" class="text-lg font-bold text-slate-800 truncate">-</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-indigo-500 text-center">
-                    <p class="text-[10px] font-black text-indigo-400 uppercase mb-1 text-center">Peak Quarter</p>
-                    <p id="peakQuarter" class="text-lg font-bold text-slate-800">-</p>
-                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-300 text-center"><p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Unique</p><p id="totalCount" class="text-3xl font-black text-slate-900">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-black text-blue-400 uppercase mb-1 text-center">Active DB</p><p id="currentCount" class="text-3xl font-black text-slate-900">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-black text-orange-400 uppercase mb-1 text-center">Archive DB</p><p id="archiveCount" class="text-3xl font-black text-slate-900">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-purple-500 text-center"><p class="text-[10px] font-black text-purple-400 uppercase mb-1 text-center">Top System</p><p id="topSystem" class="text-lg font-bold text-slate-800">-</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500 text-center"><p class="text-[10px] font-black text-emerald-400 uppercase mb-1 text-center">Lead Contributor</p><p id="topEngineer" class="text-lg font-bold text-slate-800 truncate">-</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-indigo-500 text-center"><p class="text-[10px] font-black text-indigo-400 uppercase mb-1 text-center">Peak Quarter</p><p id="peakQuarter" class="text-lg font-bold text-slate-800">-</p></div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 flex items-center justify-between uppercase text-xs tracking-widest">
-                        <span>Engineer Leaderboard (Closed Tickets)</span>
-                    </h3>
+                    <h3 class="font-bold text-slate-800 mb-6 uppercase text-xs tracking-widest">Engineer Performance (Closed Tickets)</h3>
                     <div class="h-80"><canvas id="engineerChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 overflow-y-auto" style="max-height: 400px;">
-                    <h3 class="font-bold text-slate-800 mb-4 text-xs uppercase tracking-widest border-b pb-2">Full Team Rank</h3>
-                    <table class="w-full text-xs">
-                        <tbody id="leaderboardBody" class="divide-y divide-slate-50"></tbody>
-                    </table>
+                    <h3 class="font-bold text-slate-800 mb-4 text-xs uppercase border-b pb-2 tracking-widest">Full Team Rank</h3>
+                    <table class="w-full text-xs"><tbody id="leaderboardBody" class="divide-y divide-slate-50"></tbody></table>
                 </div>
             </div>
 
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <h3 class="font-bold text-slate-800 mb-6 flex items-center uppercase text-xs tracking-widest">
-                    <span class="w-2 h-2 bg-indigo-500 rounded-full mr-2"></span> Quarterly Volume Trends (Archived & Current Combined)
+                    <span class="w-2 h-2 bg-indigo-500 rounded-full mr-2"></span> Quarterly Volume Trends
                 </h3>
                 <div class="h-80"><canvas id="quarterlyChart"></canvas></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 flex items-center uppercase text-xs tracking-widest">
-                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span> Distribution
-                    </h3>
-                    <div class="h-64"><canvas id="volumeChart"></canvas></div>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 flex items-center uppercase text-xs tracking-widest">
-                        <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span> Priority Breakdown
-                    </h3>
-                    <div class="h-64"><canvas id="priorityChart"></canvas></div>
-                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><h3 class="font-bold mb-6 text-xs uppercase tracking-widest">Distribution</h3><div class="h-64"><canvas id="volumeChart"></canvas></div></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><h3 class="font-bold mb-6 text-xs uppercase tracking-widest">Priority Breakdown</h3><div class="h-64"><canvas id="priorityChart"></canvas></div></div>
             </div>
 
             <div class="bg-slate-900 text-white p-10 rounded-3xl shadow-xl">
@@ -116,6 +84,8 @@
             const arcFile = document.getElementById('archiveFile').files[0];
             if (!curFile || !arcFile) { alert("Please select both files."); return; }
 
+            document.getElementById('processStatus').innerText = "Analyzing...";
+
             const curRaw = await parseCSV(curFile);
             const arcRaw = await parseCSV(arcFile);
 
@@ -126,42 +96,66 @@
             const enriched = enrichData(master, [...curRaw, ...arcRaw]);
 
             renderDashboard(enriched, cleanedCur.length, cleanedArc.length);
+            document.getElementById('processStatus').innerText = "Done";
         }
 
         function parseCSV(file) {
             return new Promise(resolve => Papa.parse(file, {header: true, skipEmptyLines: true, complete: r => resolve(r.data)}));
         }
 
+        // --- ADAPTIVE HEADER DETECTION ---
+        function getHeader(row, keywords) {
+            const keys = Object.keys(row);
+            return keys.find(k => {
+                const normalized = k.toLowerCase().replace(/[^a-z]/g, '');
+                return keywords.some(word => normalized.includes(word));
+            });
+        }
+
         function cleanData(data, source) {
+            if (data.length === 0) return [];
+            
+            const idKey = getHeader(data[0], ['ticketnumber', 'id']);
+            const priKey = getHeader(data[0], ['priority']);
+            const dateKey = getHeader(data[0], ['date', 'created']);
+            const statusKey = getHeader(data[0], ['status']);
+            const assignedKey = getHeader(data[0], ['assignedto', 'owner', 'engineer']);
+
             return data
                 .filter(row => {
-                    const ticketNum = row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID'];
-                    return ticketNum && ticketNum.toString().trim() !== "";
+                    const tid = row[idKey];
+                    return tid && tid.toString().trim() !== "";
                 })
                 .map(row => {
-                    const id = (row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID']).toString().trim();
+                    const id = row[idKey].toString().trim();
+                    const dateStr = row[dateKey] || "";
                     
-                    // Quarterly Logic
+                    // Improved Quarter Detection
                     let qLabel = "Unknown Q";
-                    const dateStr = row['Date'] || "";
                     if (dateStr) {
-                        const dateObj = new Date(dateStr);
-                        if (!isNaN(dateObj.getTime())) {
-                            const month = dateObj.getMonth(); // 0-11
-                            if (month <= 2) qLabel = "Q1 (Jan-Mar)";
-                            else if (month <= 5) qLabel = "Q2 (Apr-Jun)";
-                            else if (month <= 8) qLabel = "Q3 (Jul-Sep)";
-                            else qLabel = "Q4 (Oct-Dec)";
+                        const parts = dateStr.split(/[/.-]/);
+                        // Tries to handle both MM/DD and DD/MM
+                        let month = -1;
+                        if (parts.length >= 2) {
+                            const p1 = parseInt(parts[0]);
+                            const p2 = parseInt(parts[1]);
+                            // If first part is > 12, it's likely DD/MM
+                            month = (p1 > 12) ? p2 : p1;
                         }
+                        
+                        if (month >= 1 && month <= 3) qLabel = "Q1 (Jan-Mar)";
+                        else if (month >= 4 && month <= 6) qLabel = "Q2 (Apr-Jun)";
+                        else if (month >= 7 && month <= 9) qLabel = "Q3 (Jul-Sep)";
+                        else if (month >= 10 && month <= 12) qLabel = "Q4 (Oct-Dec)";
                     }
 
                     return {
                         ...row,
                         TicketID: id,
                         Source: source,
-                        Priority: row['Priority Rating'] || 'Unknown',
-                        Status: (row['Status'] || 'Open').toString().trim(),
-                        AssignedTo: cleanName(row['Assigned To'] || 'Unassigned'),
+                        Priority: row[priKey] || 'Unknown',
+                        Status: (row[statusKey] || 'Open').toString().trim(),
+                        AssignedTo: cleanName(row[assignedKey] || 'Unassigned'),
                         Quarter: qLabel
                     };
                 });
@@ -170,17 +164,24 @@
         function enrichData(filteredList, rawPool) {
             const descMap = new Map();
             let currentID = null;
+            
+            if (rawPool.length === 0) return filteredList;
+            const idKey = getHeader(rawPool[0], ['ticketnumber', 'id']);
+            const descKey = getHeader(rawPool[0], ['description']);
+            const sysKey = getHeader(rawPool[0], ['systemtype']);
+
             rawPool.forEach(row => {
-                const id = row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID'];
+                const id = row[idKey];
                 if (id && id.toString().trim() !== "") currentID = id.toString().trim();
                 if (currentID) {
-                    descMap.set(currentID, (descMap.get(currentID) || "") + " " + (row['Description'] || ""));
+                    descMap.set(currentID, (descMap.get(currentID) || "") + " " + (row[descKey] || ""));
                 }
             });
+
             return filteredList.map(item => ({
                 ...item,
                 FullDesc: descMap.get(item.TicketID) || "",
-                SystemType: sanitizeSystem(item['System Type'])
+                SystemType: sanitizeSystem(item[sysKey])
             }));
         }
 
@@ -202,7 +203,6 @@
 
         function renderDashboard(master, curLen, arcLen) {
             document.getElementById('dashboard').classList.remove('hidden');
-            
             document.getElementById('totalCount').innerText = master.length.toLocaleString();
             document.getElementById('currentCount').innerText = curLen.toLocaleString();
             document.getElementById('archiveCount').innerText = arcLen.toLocaleString();
@@ -215,25 +215,17 @@
             const sortedEng = Object.entries(engFreq);
             document.getElementById('topEngineer').innerText = sortedEng[0] ? sortedEng[0][0] : 'N/A';
 
-            // Peak Quarter logic
             const qFreq = countOcc(master, 'Quarter');
             document.getElementById('peakQuarter').innerText = Object.keys(qFreq)[0] || 'N/A';
 
             updateChart('engineerChart', 'bar', sortedEng.slice(0, 10).map(e=>e[0]), sortedEng.slice(0, 10).map(e=>e[1]), '#10b981', true);
-
             document.getElementById('leaderboardBody').innerHTML = sortedEng.map(([name, count], i) => `
-                <tr class="hover:bg-slate-50">
-                    <td class="py-2 text-slate-500 font-medium"><span class="mr-2 opacity-30 text-[9px]">${i+1}</span>${name}</td>
-                    <td class="py-2 text-right font-bold">${count}</td>
-                </tr>
+                <tr class="hover:bg-slate-50"><td class="py-2 text-slate-500 font-medium"><span class="mr-2 opacity-30 text-[9px]">${i+1}</span>${name}</td><td class="py-2 text-right font-bold">${count}</td></tr>
             `).join('');
 
             updateChart('volumeChart', 'doughnut', ['Current', 'Archive'], [curLen, arcLen], ['#2563eb', '#f97316'], false);
-            
-            const priorities = [...new Set(master.map(d => d.Priority))].sort();
-            updateBarMulti('priorityChart', priorities, master, 'Priority');
+            updateBarMulti('priorityChart', [...new Set(master.map(d => d.Priority))].sort(), master, 'Priority');
 
-            // Quarterly Chart
             const qLabels = ["Q1 (Jan-Mar)", "Q2 (Apr-Jun)", "Q3 (Jul-Sep)", "Q4 (Oct-Dec)"];
             const qData = qLabels.map(q => master.filter(d => d.Quarter === q).length);
             updateChart('quarterlyChart', 'line', qLabels, qData, '#6366f1', false);
@@ -251,24 +243,8 @@
             if (charts[id]) charts[id].destroy();
             charts[id] = new Chart(document.getElementById(id), {
                 type: type,
-                data: { 
-                    labels, 
-                    datasets: [{ 
-                        label: 'Ticket Count',
-                        data, 
-                        backgroundColor: color, 
-                        borderColor: color,
-                        borderWidth: 2,
-                        borderRadius: 6,
-                        tension: 0.3, // Curve for line chart
-                        fill: type === 'line' ? false : true
-                    }] 
-                },
-                options: { 
-                    maintainAspectRatio: false, 
-                    indexAxis: isHorizontal ? 'y' : 'x',
-                    plugins: { legend: { display: type==='doughnut', position: 'bottom' } } 
-                }
+                data: { labels, datasets: [{ label: 'Tickets', data, backgroundColor: color, borderColor: color, borderWidth: 2, borderRadius: 6, tension: 0.3, fill: type === 'line' ? false : true }] },
+                options: { maintainAspectRatio: false, indexAxis: isHorizontal ? 'y' : 'x', plugins: { legend: { display: type==='doughnut', position: 'bottom' } } }
             });
         }
 
@@ -291,9 +267,7 @@
             words.forEach(w => { if(!stop.includes(w)) freq[w] = (freq[w] || 0) + 1; });
             const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 15);
             document.getElementById('keywordCloud').innerHTML = sorted.map(([w, c]) => 
-                `<span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-blue-100">
-                    ${w} <span class="text-blue-400 ml-1 font-bold">${c}</span>
-                </span>`
+                `<span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-blue-100">${w} <span class="text-blue-400 ml-1 font-bold">${c}</span></span>`
             ).join('');
         }
     </script>
