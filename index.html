@@ -13,27 +13,27 @@
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Helpdesk Analytics Engine</h1>
-                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs">Verified Row-Count Logic (30k+) + Full Insights</p>
+                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs">Zero-Loss Logic Engine (Target: 30k+ Total / 6,842 Active)</p>
             </div>
             <div class="flex items-center bg-white p-2 rounded-lg shadow-sm border border-slate-200">
-                <span class="text-xs font-bold text-slate-400 mr-3 uppercase px-2 border-r border-slate-100">Accuracy</span>
-                <span class="text-[10px] text-emerald-600 font-black bg-emerald-50 px-2 py-1 rounded uppercase">Row-Level Validation</span>
+                <span class="text-xs font-bold text-slate-400 mr-3 uppercase px-2 border-r border-slate-100">Status</span>
+                <span id="processStatus" class="text-[10px] text-emerald-600 font-black bg-emerald-50 px-2 py-1 rounded uppercase">System Ready</span>
             </div>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors">
                 <label class="block text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider text-center">Current Helpdesk Data</label>
-                <input type="file" id="currentFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white cursor-pointer"/>
+                <input type="file" id="currentFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white cursor-pointer"/>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-orange-300 transition-colors">
                 <label class="block text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider text-center">Archive Data</label>
-                <input type="file" id="archiveFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-orange-500 file:text-white cursor-pointer"/>
+                <input type="file" id="archiveFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-orange-500 file:text-white cursor-pointer"/>
             </div>
         </div>
 
         <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-slate-800 transition-all mb-12 border-b-4 border-slate-700 active:border-b-0 active:translate-y-1">
-            Analyze Full Dataset
+            Generate Comprehensive Analysis
         </button>
 
         <div id="dashboard" class="hidden space-y-8 pb-20">
@@ -48,24 +48,17 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 uppercase text-xs tracking-widest">Engineer Leaderboard (Closed Entries)</h3>
+                    <h3 class="font-bold text-slate-800 mb-6 uppercase text-xs tracking-widest text-center">Engineer Leaderboard</h3>
                     <div class="h-80"><canvas id="engineerChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 overflow-y-auto" style="max-height: 400px;">
-                    <h3 class="font-bold text-slate-800 mb-4 text-xs uppercase border-b pb-2 tracking-widest">Full Rank List</h3>
+                    <h3 class="font-bold text-slate-800 mb-4 text-xs uppercase border-b pb-2 tracking-widest text-center">Full Team Rank</h3>
                     <table class="w-full text-xs"><tbody id="leaderboardBody" class="divide-y divide-slate-50"></tbody></table>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-slate-800 mb-6 flex items-center uppercase text-xs tracking-widest">
-                    <span class="w-2 h-2 bg-indigo-500 rounded-full mr-2"></span> Quarterly Volume Trends
-                </h3>
-                <div class="h-80"><canvas id="quarterlyChart"></canvas></div>
-            </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><h3 class="font-bold mb-6 text-xs uppercase tracking-widest text-center">Database Comparison</h3><div class="h-64"><canvas id="volumeChart"></canvas></div></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><h3 class="font-bold mb-6 text-xs uppercase tracking-widest text-center">Database Volume</h3><div class="h-64"><canvas id="volumeChart"></canvas></div></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><h3 class="font-bold mb-6 text-xs uppercase tracking-widest text-center">Priority Breakdown</h3><div class="h-64"><canvas id="priorityChart"></canvas></div></div>
             </div>
 
@@ -84,50 +77,75 @@
             const arcFile = document.getElementById('archiveFile').files[0];
             if (!curFile || !arcFile) { alert("Please upload both files."); return; }
 
+            document.getElementById('processStatus').innerText = "Processing...";
+
             const curRaw = await parseCSV(curFile);
             const arcRaw = await parseCSV(arcFile);
 
-            // 1. Restore the simple filter logic that gave the correct 30k+ counts
-            const cleanedCur = cleanData(curRaw, 'Current');
-            const cleanedArc = cleanData(arcRaw, 'Archive');
+            // Using "Zero-Loss" Ingestion
+            const cleanedCur = cleanDataInvincible(curRaw, 'Current');
+            const cleanedArc = cleanDataInvincible(arcRaw, 'Archive');
 
             const master = [...cleanedCur, ...cleanedArc];
 
             renderDashboard(master, cleanedCur.length, cleanedArc.length);
+            document.getElementById('processStatus').innerText = "System Ready";
         }
 
         function parseCSV(file) {
             return new Promise(resolve => Papa.parse(file, {header: true, skipEmptyLines: true, complete: r => resolve(r.data)}));
         }
 
-        // --- VERIFIED ROW-COUNT LOGIC ---
-        function cleanData(data, source) {
-            return data.filter(row => {
-                const ticketNum = row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID'];
-                return ticketNum && ticketNum.toString().trim() !== "";
-            }).map(row => {
-                const dateStr = row['Date'] || "";
+        // --- NEW INVINCIBLE INGESTION LOGIC ---
+        function cleanDataInvincible(data, source) {
+            if (data.length === 0) return [];
+            
+            const keys = Object.keys(data[0]);
+            // Search for ID/Ticket column regardless of spaces or case
+            const idCol = keys.find(k => /ticket|id|number/i.test(k));
+            const dateCol = keys.find(k => /date|created/i.test(k));
+            const statusCol = keys.find(k => /status/i.test(k));
+            const assignCol = keys.find(k => /assigned|owner|engineer/i.test(k));
+            const priCol = keys.find(k => /priority/i.test(k));
+            const sysCol = keys.find(k => /system/i.test(k));
+            const descCol = keys.find(k => /description|fault|request/i.test(k));
+
+            let lastValidID = null;
+
+            return data.map(row => {
+                const currentID = row[idCol];
+                
+                // Memory Fill: If this row has no ID, it belongs to the previous ID
+                if (currentID && currentID.toString().trim() !== "") {
+                    lastValidID = currentID.toString().trim();
+                }
+
+                // Quarterly Logic
                 let qLabel = "Unknown Q";
+                const dateStr = row[dateCol] || "";
                 if (dateStr) {
-                    const dateObj = new Date(dateStr);
-                    if (!isNaN(dateObj.getTime())) {
-                        const m = dateObj.getMonth();
+                    const d = new Date(dateStr);
+                    if (!isNaN(d.getTime())) {
+                        const m = d.getMonth();
                         if (m <= 2) qLabel = "Q1 (Jan-Mar)";
                         else if (m <= 5) qLabel = "Q2 (Apr-Jun)";
                         else if (m <= 8) qLabel = "Q3 (Jul-Sep)";
                         else qLabel = "Q4 (Oct-Dec)";
                     }
                 }
+
                 return {
                     ...row,
+                    TicketID: lastValidID,
                     Source: source,
-                    Priority: row['Priority Rating'] || 'Unknown',
-                    Status: (row['Status'] || 'Open').toString().trim(),
-                    AssignedTo: cleanName(row['Assigned To'] || 'Unassigned'),
-                    SystemType: sanitizeSystem(row['System Type']),
+                    Priority: row[priCol] || 'P3',
+                    Status: (row[statusCol] || 'Open').toString().trim(),
+                    AssignedTo: cleanName(row[assignCol] || 'Unassigned'),
+                    SystemType: sanitizeSystem(row[sysCol]),
+                    Description: row[descCol] || "",
                     Quarter: qLabel
                 };
-            });
+            }).filter(row => row.TicketID); // Final safeguard
         }
 
         function sanitizeSystem(val) {
@@ -138,7 +156,7 @@
 
         function cleanName(val) {
             let n = val.toString().trim();
-            if (n === "0" || n === "nan" || n === "") return "Unassigned";
+            if (n === "0" || n === "nan" || n === "" || n === "Unassigned") return "Unassigned";
             if (n.includes('@')) {
                 n = n.split('@')[0].replace(/[._]/g, ' ');
                 return n.split(' ').map(s => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
@@ -156,7 +174,6 @@
             const sysFreq = countOcc(master, 'SystemType');
             document.getElementById('topSystem').innerText = Object.keys(sysFreq)[0] || 'N/A';
 
-            // Engineer ranking (Current database only)
             const completed = master.filter(d => d.Source === 'Current' && d.Status.toLowerCase().startsWith('complete'));
             const engFreq = countOcc(completed, 'AssignedTo');
             const sortedEng = Object.entries(engFreq);
@@ -165,15 +182,11 @@
             const qFreq = countOcc(master, 'Quarter');
             document.getElementById('peakQuarter').innerText = Object.keys(qFreq)[0] || 'N/A';
 
+            // Visuals
             updateChart('engineerChart', 'bar', sortedEng.slice(0, 10).map(e=>e[0]), sortedEng.slice(0, 10).map(e=>e[1]), '#10b981', true);
             document.getElementById('leaderboardBody').innerHTML = sortedEng.map(([name, count], i) => `<tr><td class="py-2 text-slate-500">${i+1}. ${name}</td><td class="py-2 text-right font-bold">${count}</td></tr>`).join('');
-
             updateChart('volumeChart', 'doughnut', ['Current', 'Archive'], [curLen, arcLen], ['#2563eb', '#f97316'], false);
             updateBarMulti('priorityChart', [...new Set(master.map(d => d.Priority))].sort(), master, 'Priority');
-
-            const qLabels = ["Q1 (Jan-Mar)", "Q2 (Apr-Jun)", "Q3 (Jul-Sep)", "Q4 (Oct-Dec)"];
-            const qData = qLabels.map(q => master.filter(d => d.Quarter === q).length);
-            updateChart('quarterlyChart', 'line', qLabels, qData, '#6366f1', false);
 
             analyzeKeywords(master);
         }
@@ -184,12 +197,12 @@
             return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1]));
         }
 
-        function updateChart(id, type, labels, data, color, isHorizontal) {
+        function updateChart(id, type, labels, data, color, isH) {
             if (charts[id]) charts[id].destroy();
             charts[id] = new Chart(document.getElementById(id), {
                 type: type,
-                data: { labels, datasets: [{ label: 'Tickets', data, backgroundColor: color, borderColor: color, borderWidth: 2, borderRadius: 6, tension: 0.3, fill: type === 'line' ? false : true }] },
-                options: { maintainAspectRatio: false, indexAxis: isHorizontal ? 'y' : 'x', plugins: { legend: { display: type==='doughnut', position: 'bottom' } } }
+                data: { labels, datasets: [{ label: 'Entries', data, backgroundColor: color, borderRadius: 6 }] },
+                options: { maintainAspectRatio: false, indexAxis: isH ? 'y' : 'x', plugins: { legend: { display: type==='doughnut', position: 'bottom' } } }
             });
         }
 
@@ -205,7 +218,7 @@
         }
 
         function analyzeKeywords(data) {
-            const text = data.slice(0, 5000).map(d => d.Description).join(' ').toLowerCase();
+            const text = data.slice(0, 10000).map(d => d.Description).join(' ').toLowerCase();
             const words = text.match(/\b(\w{5,})\b/g) || [];
             const stop = ['please','thank','would','could','there','evening','hello','regarding'];
             const freq = {};
