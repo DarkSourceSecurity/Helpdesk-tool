@@ -13,26 +13,26 @@
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Helpdesk Analytics Engine</h1>
-                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs italic">Year-on-Year Performance Logic Active</p>
+                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs italic">Strict DD/MM/YYYY Parsing | Multi-Year Logic Active</p>
             </div>
             <div class="bg-white p-2 px-4 rounded-lg shadow-sm border border-slate-200">
-                <span id="processStatus" class="text-[10px] text-blue-600 font-black uppercase tracking-tighter text-center block">System Ready</span>
+                <span id="processStatus" class="text-[10px] text-blue-600 font-black uppercase tracking-tighter">System Ready</span>
             </div>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors">
                 <label class="block text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider text-center">Current Data</label>
-                <input type="file" id="currentFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white cursor-pointer"/>
+                <input type="file" id="currentFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white cursor-pointer"/>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-orange-300 transition-colors">
                 <label class="block text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider text-center">Archive Data</label>
-                <input type="file" id="archiveFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-orange-500 file:text-white cursor-pointer"/>
+                <input type="file" id="archiveFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-orange-500 file:text-white cursor-pointer"/>
             </div>
         </div>
 
         <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-slate-800 transition-all mb-12 border-b-4 border-slate-700 active:border-b-0 active:translate-y-1">
-            Generate Year-on-Year Analysis
+            Generate Comprehensive Analysis
         </button>
 
         <div id="dashboard" class="hidden space-y-8 pb-20">
@@ -41,29 +41,29 @@
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-black text-blue-400 uppercase mb-1">Active DB</p><p id="currentCount" class="text-3xl font-black">0</p></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-black text-orange-400 uppercase mb-1">Archive DB</p><p id="archiveCount" class="text-3xl font-black">0</p></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-purple-500 text-center"><p class="text-[10px] font-black text-purple-400 uppercase mb-1">Top System</p><p id="topSystem" class="text-lg font-bold">-</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500 text-center"><p class="text-[10px] font-black text-emerald-400 uppercase mb-1 text-center">Lead Contributor</p><p id="topEngineer" class="text-lg font-bold truncate">-</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-indigo-500 text-center"><p class="text-[10px] font-black text-indigo-400 uppercase mb-1 text-center">Peak Year</p><p id="peakYear" class="text-lg font-bold">-</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500 text-center"><p class="text-[10px] font-black text-emerald-400 uppercase mb-1">Lead Eng</p><p id="topEngineer" class="text-lg font-bold truncate">-</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-indigo-500 text-center"><p class="text-[10px] font-black text-indigo-400 uppercase mb-1">Peak Year</p><p id="peakYear" class="text-lg font-bold">-</p></div>
             </div>
 
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest">
-                        <span class="w-2 h-2 bg-indigo-500 rounded-full mr-2"></span> Year-on-Year Growth (Quarterly)
-                    </h3>
-                    <p class="text-[10px] text-slate-400 italic font-medium">Overlapping Year Comparison</p>
-                </div>
+                <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-6">Year-on-Year Comparison (Quarterly)</h3>
                 <div class="h-96"><canvas id="quarterlyChart"></canvas></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 uppercase text-xs tracking-widest">Engineer Performance (Active)</h3>
+                    <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-6">Engineer Leaderboard</h3>
                     <div class="h-64"><canvas id="engineerChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 mb-6 uppercase text-xs tracking-widest">Priority Distribution</h3>
+                    <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-6">Priority Distribution</h3>
                     <div class="h-64"><canvas id="priorityChart"></canvas></div>
                 </div>
+            </div>
+            
+            <div class="bg-slate-900 text-white p-10 rounded-3xl shadow-xl">
+                <h3 class="text-xl font-bold mb-6 uppercase tracking-widest text-center border-b border-slate-800 pb-4">Technical Keyword Cloud</h3>
+                <div id="keywordCloud" class="flex flex-wrap justify-center gap-3"></div>
             </div>
         </div>
     </div>
@@ -98,16 +98,24 @@
                 return ticketNum && ticketNum.toString().trim() !== "";
             }).map(row => {
                 const id = (row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID']).toString().trim();
-                const dateStr = row['Date'] || "";
+                const dateStr = (row['Date'] || "").toString().trim();
                 
                 let year = "Unknown";
                 let quarter = "Q1";
 
                 if (dateStr) {
-                    const d = new Date(dateStr);
-                    if (!isNaN(d.getTime())) {
-                        year = d.getFullYear().toString();
-                        quarter = "Q" + (Math.floor(d.getMonth() / 3) + 1);
+                    // FORCING DD/MM/YYYY
+                    const parts = dateStr.split('/');
+                    if (parts.length >= 3) {
+                        const day = parseInt(parts[0]);
+                        const month = parseInt(parts[1]) - 1;
+                        const fullYear = parts[2].split(' ')[0]; // Handle timestamp
+                        const dObj = new Date(fullYear, month, day);
+
+                        if (!isNaN(dObj.getTime())) {
+                            year = dObj.getFullYear().toString();
+                            quarter = "Q" + (Math.floor(dObj.getMonth() / 3) + 1);
+                        }
                     }
                 }
 
@@ -147,7 +155,6 @@
             const engFreq = countOcc(completed, 'AssignedTo');
             document.getElementById('topEngineer').innerText = Object.keys(engFreq)[0] || 'N/A';
 
-            // YEAR-ON-YEAR CHART LOGIC
             const yearMap = {}; 
             master.forEach(d => {
                 if (d.Year !== "Unknown") {
@@ -158,40 +165,51 @@
 
             const years = Object.keys(yearMap).sort();
             const qLabels = ["Q1", "Q2", "Q3", "Q4"];
-            const colors = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444']; // Blue, Green, Orange, Purple, Red
+            const colors = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'];
 
             const datasets = years.map((yr, i) => ({
                 label: yr,
                 data: qLabels.map(q => yearMap[yr][q]),
                 borderColor: colors[i % colors.length],
-                backgroundColor: colors[i % colors.length] + '10', // 10% opacity for fill
+                backgroundColor: colors[i % colors.length] + '10',
                 tension: 0.4,
-                fill: true,
-                pointRadius: 5,
-                pointHoverRadius: 8
+                fill: true
             }));
 
             document.getElementById('peakYear').innerText = years.length ? 
                 years.map(y => [y, Object.values(yearMap[y]).reduce((a,b)=>a+b)]).sort((a,b)=>b[1]-a[1])[0][0] : 'N/A';
 
-            updateMultiLineChart('quarterlyChart', qLabels, datasets);
-
-            // Other Charts
-            updateBarMulti('priorityChart', [...new Set(master.map(d => d.Priority))].sort(), master, 'Priority');
-            const engList = Object.entries(engFreq).slice(0, 10);
-            updateSimpleChart('engineerChart', 'bar', engList.map(e=>e[0]), engList.map(e=>e[1]), '#10b981', true);
+            updateChart('quarterlyChart', 'line', qLabels, datasets);
+            updateChart('engineerChart', 'bar', Object.keys(engFreq).slice(0, 10), [{ label: 'Closed', data: Object.values(engFreq).slice(0, 10), backgroundColor: '#10b981' }], null, true);
+            updateBarMulti('priorityChart', [...new Set(master.map(d => d.Priority))].sort(), master);
+            analyzeKeywords(master);
         }
 
-        function updateMultiLineChart(id, labels, datasets) {
+        function updateChart(id, type, labels, datasets, color, isH) {
             if (charts[id]) charts[id].destroy();
             charts[id] = new Chart(document.getElementById(id), {
-                type: 'line',
-                data: { labels, datasets },
+                type: type,
+                data: { labels, datasets: Array.isArray(datasets) ? datasets : [{ data: datasets, backgroundColor: color }] },
                 options: { 
                     maintainAspectRatio: false, 
-                    plugins: { legend: { display: true, position: 'top' } },
-                    scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } }, x: { grid: { display: false } } }
+                    indexAxis: isH ? 'y' : 'x',
+                    plugins: { legend: { display: type === 'line', position: 'top' } }
                 }
+            });
+        }
+
+        function updateBarMulti(id, labels, master) {
+            if (charts[id]) charts[id].destroy();
+            charts[id] = new Chart(document.getElementById(id), {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'Current', data: labels.map(l => master.filter(d => d.Priority === l && d.Source === 'Current').length), backgroundColor: '#2563eb' },
+                        { label: 'Archive', data: labels.map(l => master.filter(d => d.Priority === l && l !== 'Unknown' && d.Source === 'Archive').length), backgroundColor: '#fb923c' }
+                    ]
+                },
+                options: { maintainAspectRatio: false }
             });
         }
 
@@ -201,24 +219,16 @@
             return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1]));
         }
 
-        function updateSimpleChart(id, type, labels, data, color, isH) {
-            if (charts[id]) charts[id].destroy();
-            charts[id] = new Chart(document.getElementById(id), {
-                type: type,
-                data: { labels, datasets: [{ label: 'Count', data, backgroundColor: color, borderRadius: 6 }] },
-                options: { maintainAspectRatio: false, indexAxis: isH ? 'y' : 'x', plugins: { legend: { display: false } } }
-            });
-        }
-
-        function updateBarMulti(id, labels, data, key) {
-            const cur = labels.map(l => data.filter(d => d[key] === l && d.Source === 'Current').length);
-            const arc = labels.map(l => data.filter(d => d[key] === l && d.Source === 'Archive').length);
-            if (charts[id]) charts[id].destroy();
-            charts[id] = new Chart(document.getElementById(id), {
-                type: 'bar',
-                data: { labels, datasets: [{ label: 'Current', data: cur, backgroundColor: '#2563eb' }, { label: 'Archive', data: arc, backgroundColor: '#fb923c' }] },
-                options: { maintainAspectRatio: false }
-            });
+        function analyzeKeywords(data) {
+            const text = data.slice(0, 10000).map(d => d.Description).join(' ').toLowerCase();
+            const words = text.match(/\b(\w{5,})\b/g) || [];
+            const stop = ['please','thank','would','could','there','evening','hello','regarding'];
+            const freq = {};
+            words.forEach(w => { if(!stop.includes(w)) freq[w] = (freq[w] || 0) + 1; });
+            const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 15);
+            document.getElementById('keywordCloud').innerHTML = sorted.map(([w, c]) => 
+                `<span class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-blue-100">${w} <span class="text-blue-400 ml-1 font-bold">${c}</span></span>`
+            ).join('');
         }
     </script>
 </body>
