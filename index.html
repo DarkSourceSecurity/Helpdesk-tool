@@ -13,47 +13,56 @@
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Helpdesk Analytics Engine</h1>
-                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs italic">Brute-Force Header Detection Enabled</p>
+                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs">Verified 30k+ Engine | Space-Proof Logic Active</p>
+            </div>
+            <div class="bg-white p-2 px-4 rounded-lg shadow-sm border border-slate-200">
+                <span id="processStatus" class="text-[10px] text-blue-600 font-black uppercase tracking-tighter text-center block">System Ready</span>
             </div>
         </header>
 
-        <div id="diagnosticBox" class="hidden mb-6 bg-amber-50 border border-amber-200 p-4 rounded-xl text-xs font-mono text-amber-800">
-            <p class="font-bold mb-2 uppercase text-[10px]">Header Detection Logs:</p>
-            <div id="logContent"></div>
-        </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-blue-300 transition-colors">
                 <label class="block text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider text-center">Current Helpdesk Data</label>
                 <input type="file" id="currentFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-blue-600 file:text-white cursor-pointer"/>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:border-orange-300 transition-colors">
                 <label class="block text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider text-center">Archive Data</label>
                 <input type="file" id="archiveFile" accept=".csv" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-orange-500 file:text-white cursor-pointer"/>
             </div>
         </div>
 
-        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg mb-12 border-b-4 border-slate-700 active:border-b-0 active:translate-y-1">
-            Run Brute-Force Analysis
+        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-slate-800 transition-all mb-12 border-b-4 border-slate-700 active:border-b-0 active:translate-y-1">
+            Generate Comparative Analysis
         </button>
 
         <div id="dashboard" class="hidden space-y-8 pb-20">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-300 text-center"><p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Entries</p><p id="totalCount" class="text-3xl font-black text-slate-900">0</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-black text-blue-400 uppercase mb-1">Active DB</p><p id="currentCount" class="text-3xl font-black text-slate-900">0</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-black text-orange-400 uppercase mb-1">Archive DB</p><p id="archiveCount" class="text-3xl font-black text-slate-900">0</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-purple-500 text-center"><p class="text-[10px] font-black text-purple-400 uppercase mb-1">Top System</p><p id="topSystem" class="text-lg font-bold text-slate-800">-</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500 text-center"><p class="text-[10px] font-black text-emerald-400 uppercase mb-1">Lead Contributor</p><p id="topEngineer" class="text-lg font-bold text-slate-800 truncate">-</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-indigo-500 text-center"><p class="text-[10px] font-black text-indigo-400 uppercase mb-1">Peak Quarter</p><p id="peakQuarter" class="text-lg font-bold text-slate-800">-</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-300 text-center"><p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Unique</p><p id="totalCount" class="text-3xl font-black">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-black text-blue-400 uppercase mb-1">Active DB</p><p id="currentCount" class="text-3xl font-black">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-black text-orange-400 uppercase mb-1">Archive DB</p><p id="archiveCount" class="text-3xl font-black">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-purple-500 text-center"><p class="text-[10px] font-black text-purple-400 uppercase mb-1">Top System</p><p id="topSystem" class="text-lg font-bold"> - </p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500 text-center"><p class="text-[10px] font-black text-emerald-400 uppercase mb-1 text-center">Lead Contributor</p><p id="topEngineer" class="text-lg font-bold truncate"> - </p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-indigo-500 text-center"><p class="text-[10px] font-black text-indigo-400 uppercase mb-1">Peak Quarter</p><p id="peakQuarter" class="text-lg font-bold"> - </p></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="font-bold text-slate-800 mb-6 uppercase text-xs tracking-widest text-center">Engineer Leaderboard</h3>
+                    <div class="h-80"><canvas id="engineerChart"></canvas></div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 overflow-y-auto" style="max-height: 400px;">
+                    <h3 class="font-bold text-slate-800 mb-4 text-xs uppercase border-b pb-2 tracking-widest text-center">Full Team Rank</h3>
+                    <table class="w-full text-xs"><tbody id="leaderboardBody" class="divide-y divide-slate-50"></tbody></table>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><div class="h-64"><canvas id="volumeChart"></canvas></div></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><div class="h-64"><canvas id="priorityChart"></canvas></div></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><h3 class="font-bold mb-6 text-xs uppercase tracking-widest text-center">Volume Ratio</h3><div class="h-64"><canvas id="volumeChart"></canvas></div></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><h3 class="font-bold mb-6 text-xs uppercase tracking-widest text-center">Priority Breakdown</h3><div class="h-64"><canvas id="priorityChart"></canvas></div></div>
             </div>
 
             <div class="bg-slate-900 text-white p-10 rounded-3xl shadow-xl">
-                <h3 class="text-xl font-bold mb-6 uppercase tracking-widest text-center border-b border-slate-800 pb-4">Keywords Detected</h3>
+                <h3 class="text-xl font-bold mb-6 uppercase tracking-widest text-center border-b border-slate-800 pb-4">Keywords Cloud</h3>
                 <div id="keywordCloud" class="flex flex-wrap justify-center gap-3"></div>
             </div>
         </div>
@@ -65,81 +74,110 @@
         async function processData() {
             const curFile = document.getElementById('currentFile').files[0];
             const arcFile = document.getElementById('archiveFile').files[0];
-            if (!curFile || !arcFile) return alert("Select both files.");
+            if (!curFile || !arcFile) return alert("Please select both files.");
 
-            document.getElementById('diagnosticBox').classList.remove('hidden');
-            document.getElementById('logContent').innerHTML = "";
+            document.getElementById('processStatus').innerText = "PROCESSING...";
 
             const curRaw = await parseCSV(curFile);
             const arcRaw = await parseCSV(arcFile);
 
-            const cleanedCur = bruteForceClean(curRaw, 'Current');
-            const cleanedArc = bruteForceClean(arcRaw, 'Archive');
+            // Using the new "Space-Agnostic" cleaner
+            const cleanedCur = spaceProofClean(curRaw, 'Current');
+            const cleanedArc = spaceProofClean(arcRaw, 'Archive');
 
             renderDashboard([...cleanedCur, ...cleanedArc], cleanedCur.length, cleanedArc.length);
+            document.getElementById('processStatus').innerText = "DONE";
         }
 
         function parseCSV(file) {
             return new Promise(resolve => Papa.parse(file, {header: true, skipEmptyLines: true, complete: r => resolve(r.data)}));
         }
 
-        function bruteForceClean(data, source) {
+        function spaceProofClean(data, source) {
             if (!data.length) return [];
             
-            // Normalize all headers: remove all symbols, spaces, and invisible characters
-            const originalHeaders = Object.keys(data[0]);
-            const normalizedHeaders = {};
-            originalHeaders.forEach(h => {
-                const clean = h.toLowerCase().replace(/[^a-z0-9]/g, '');
-                normalizedHeaders[clean] = h;
+            // Map the headers by stripping ALL spaces/symbols
+            const originalKeys = Object.keys(data[0]);
+            const headerMap = {};
+            originalKeys.forEach(key => {
+                const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+                headerMap[cleanKey] = key;
             });
 
-            // Finder function
-            const find = (keywords) => {
-                for (let k of keywords) {
-                    const match = Object.keys(normalizedHeaders).find(clean => clean.includes(k));
-                    if (match) return normalizedHeaders[match];
+            // Finder
+            const getCol = (terms) => {
+                for (let t of terms) {
+                    const found = Object.keys(headerMap).find(k => k.includes(t));
+                    if (found) return headerMap[found];
                 }
                 return null;
             };
 
-            const idCol = find(['ticketnumber', 'id', 'ticket']);
-            const dateCol = find(['date', 'created']);
-            const statusCol = find(['status']);
-            const assignCol = find(['assignedto', 'engineer', 'owner']);
-            const sysCol = find(['systemtype', 'system']);
-            const priCol = find(['priority']);
-            const descCol = find(['description', 'fault', 'request']);
+            const idCol = getCol(['ticketnumber', 'id']);
+            const dateCol = getCol(['date', 'created']);
+            const assignCol = getCol(['assigned', 'owner', 'engineer']);
+            const statusCol = getCol(['status']);
+            const sysCol = getCol(['systemtype', 'system']);
+            const priCol = getCol(['priorityrating', 'priority']);
+            const descCol = getCol(['description', 'fault', 'request']);
 
-            document.getElementById('logContent').innerHTML += `[${source}] Found ID Column: "${idCol}" | Date: "${dateCol}"<br>`;
-
+            const ticketMap = new Map();
             let lastID = null;
-            return data.map(row => {
-                const tid = row[idCol];
-                if (tid && tid.toString().trim() !== "") lastID = tid.toString().trim();
 
-                // Quarter Detection
-                let q = "Unknown Q";
-                if (row[dateCol]) {
-                    const d = new Date(row[dateCol]);
-                    if (!isNaN(d.getTime())) {
-                        const m = d.getMonth();
-                        if (m <= 2) q = "Q1 (Jan-Mar)";
-                        else if (m <= 5) q = "Q2 (Apr-Jun)";
-                        else if (m <= 8) q = "Q3 (Jul-Sep)";
-                        else q = "Q4 (Oct-Dec)";
+            data.forEach(row => {
+                const rawID = row[idCol] ? row[idCol].toString().trim() : "";
+                
+                if (rawID !== "") lastID = rawID;
+
+                if (lastID) {
+                    if (!ticketMap.has(lastID)) {
+                        // Quarterly detection
+                        let q = "Unknown Q";
+                        const dStr = row[dateCol];
+                        if (dStr) {
+                            const dObj = new Date(dStr);
+                            if (!isNaN(dObj.getTime())) {
+                                const m = dObj.getMonth();
+                                if (m <= 2) q = "Q1 (Jan-Mar)";
+                                else if (m <= 5) q = "Q2 (Apr-Jun)";
+                                else if (m <= 8) q = "Q3 (Jul-Sep)";
+                                else q = "Q4 (Oct-Dec)";
+                            }
+                        }
+
+                        ticketMap.set(lastID, {
+                            TicketID: lastID,
+                            Source: source,
+                            Priority: row[priCol] || 'P3',
+                            Status: (row[statusCol] || 'Open').toString().trim(),
+                            AssignedTo: cleanName(row[assignCol]),
+                            SystemType: sanitizeSystem(row[sysCol]),
+                            FullDesc: "",
+                            Quarter: q
+                        });
                     }
+                    const t = ticketMap.get(lastID);
+                    t.FullDesc += " " + (row[descCol] || "");
                 }
+            });
 
-                return {
-                    TicketID: lastID, Source: source, Priority: row[priCol] || 'P3',
-                    Status: (row[statusCol] || 'Open').trim(),
-                    AssignedTo: row[assignCol] || 'Unassigned',
-                    SystemType: (row[sysCol] || "Other").toString().replace(/[\[\]"]/g, ''),
-                    Desc: row[descCol] || "",
-                    Quarter: q
-                };
-            }).filter(r => r.TicketID);
+            return Array.from(ticketMap.values());
+        }
+
+        function sanitizeSystem(val) {
+            if (!val) return "Other";
+            let clean = val.toString().replace(/[\[\]"]/g, '').trim();
+            return (clean === "" || !isNaN(clean)) ? "Other" : clean;
+        }
+
+        function cleanName(val) {
+            if (!val || val === "0" || val === "nan") return "Unassigned";
+            let n = val.toString().trim();
+            if (n.includes('@')) {
+                n = n.split('@')[0].replace(/[._]/g, ' ');
+                return n.split(' ').map(s => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
+            }
+            return n;
         }
 
         function renderDashboard(master, curLen, arcLen) {
@@ -153,13 +191,18 @@
             
             const completed = master.filter(d => d.Source === 'Current' && d.Status.toLowerCase().startsWith('complete'));
             const engs = count(completed, 'AssignedTo');
-            document.getElementById('topEngineer').innerText = Object.keys(engs)[0] || '-';
+            const engList = Object.entries(engs);
+            document.getElementById('topEngineer').innerText = engList[0] ? engList[0][0] : '-';
 
             const qs = count(master, 'Quarter');
             document.getElementById('peakQuarter').innerText = Object.keys(qs)[0] || '-';
 
             updateChart('volumeChart', 'doughnut', ['Current', 'Archive'], [curLen, arcLen], ['#2563eb', '#f97316']);
             updateChart('priorityChart', 'bar', [...new Set(master.map(d=>d.Priority))].sort(), null, '#2563eb', false, master);
+            
+            updateChart('engineerChart', 'bar', engList.slice(0, 10).map(e=>e[0]), engList.slice(0, 10).map(e=>e[1]), '#10b981', true);
+            document.getElementById('leaderboardBody').innerHTML = engList.map(([n, c], i) => `<tr><td class="py-2 text-slate-500">${i+1}. ${n}</td><td class="py-2 text-right font-bold text-slate-800">${c}</td></tr>`).join('');
+            
             analyzeKeywords(master);
         }
 
@@ -180,16 +223,15 @@
             } else {
                 datasets = [{ data, backgroundColor: colors }];
             }
-
             charts[id] = new Chart(document.getElementById(id), {
                 type: type,
                 data: { labels, datasets },
-                options: { maintainAspectRatio: false, plugins: { legend: { display: type==='doughnut', position: 'bottom' } } }
+                options: { maintainAspectRatio: false, indexAxis: isH ? 'y' : 'x', plugins: { legend: { display: type==='doughnut', position: 'bottom' } } }
             });
         }
 
         function analyzeKeywords(data) {
-            const text = data.slice(0, 5000).map(d => d.Desc).join(' ').toLowerCase();
+            const text = data.slice(0, 5000).map(d => d.FullDesc).join(' ').toLowerCase();
             const words = text.match(/\b(\w{5,})\b/g) || [];
             const stop = ['please','thank','would','could','there','evening','hello','regarding'];
             const freq = {};
