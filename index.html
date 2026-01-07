@@ -46,17 +46,17 @@
             </div>
 
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-6">Year-on-Year Comparison (Quarterly)</h3>
+                <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-6">Year-on-Year Comparison (Combined Archive & Active DB)</h3>
                 <div class="h-96"><canvas id="quarterlyChart"></canvas></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-6">Engineer Leaderboard</h3>
+                    <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-6">Engineer Leaderboard (Current Active DB Only)</h3>
                     <div class="h-64"><canvas id="engineerChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-6">Priority Distribution</h3>
+                    <h3 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-6">Priority Distribution (Combined Archive & Active DB)</h3>
                     <div class="h-64"><canvas id="priorityChart"></canvas></div>
                 </div>
             </div>
@@ -124,24 +124,19 @@
                     Priority: row['Priority Rating'] || 'Unknown',
                     Status: (row['Status'] || 'Open').toString().trim(),
                     AssignedTo: cleanName(row['Assigned To']),
-                    SystemType: sanitizeSystem(row['System Type']), // CLEAN SYSTEM DETECTION
+                    SystemType: sanitizeSystem(row['System Type']),
                     Year: year,
                     Quarter: quarter
                 };
             });
         }
 
-        // --- NEW SMART SYSTEM CLEANER ---
         function sanitizeSystem(val) {
             if (!val) return "Other";
             let clean = val.toString().replace(/[\[\]"]/g, '').trim();
-            
-            // If it's just a number (like 8888), treat it as invalid
             if (clean === "" || !isNaN(clean)) return "Invalid";
-            
             const stopWords = ["UNKNOWN", "OTHER", "N/A", "NONE", "NULL"];
             if (stopWords.includes(clean.toUpperCase())) return "Invalid";
-
             return clean;
         }
 
@@ -161,7 +156,6 @@
             document.getElementById('currentCount').innerText = curLen.toLocaleString();
             document.getElementById('archiveCount').innerText = arcLen.toLocaleString();
 
-            // Filter out "Invalid" entries for the Top System display
             const validSystems = master.filter(d => d.SystemType !== "Invalid");
             const sysFreq = countOcc(validSystems, 'SystemType');
             document.getElementById('topSystem').innerText = Object.keys(sysFreq)[0] || 'N/A';
