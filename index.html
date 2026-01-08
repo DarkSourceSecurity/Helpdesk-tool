@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Helpdesk Pro - Global Decoder</title>
+    <title>Helpdesk Pro - Export & Review</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,7 +13,7 @@
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="flex-1">
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight uppercase italic">Helpdesk Intel</h1>
-                <p id="systemStatus" class="text-blue-600 font-bold uppercase text-[10px] tracking-widest">Global ISO Decoder & Drill-down Active</p>
+                <p id="systemStatus" class="text-blue-600 font-bold uppercase text-[10px] tracking-widest">Review Export & Global ISO Logic Active</p>
             </div>
             
             <div id="filterArea" class="hidden flex flex-wrap items-center gap-4 bg-white p-4 rounded-3xl shadow-sm border border-slate-200">
@@ -22,7 +22,7 @@
                     <select id="regionSelector" onchange="updateLocationList()" class="bg-slate-100 border-none text-sm font-bold text-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 min-w-[160px]"></select>
                 </div>
                 <div class="flex flex-col">
-                    <label class="text-[9px] font-black text-slate-400 uppercase mb-1 ml-1">2. Decoded Country/Site</label>
+                    <label class="text-[9px] font-black text-slate-400 uppercase mb-1 ml-1">2. Standardized Site</label>
                     <select id="locationSelector" onchange="applyFilters()" class="bg-slate-100 border-none text-sm font-bold text-blue-600 rounded-xl focus:ring-2 focus:ring-blue-500 min-w-[160px]">
                         <option value="ALL">All Locations</option>
                     </select>
@@ -31,23 +31,23 @@
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-3xl border-2 border-dashed border-slate-200 text-center">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 text-center">
                 <label class="block text-[10px] font-black text-slate-400 uppercase mb-3">Active Database</label>
                 <input type="file" id="currentFile" class="text-xs w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-600 file:text-white font-bold cursor-pointer"/>
             </div>
-            <div class="bg-white p-6 rounded-3xl border-2 border-dashed border-slate-200 text-center">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 text-center">
                 <label class="block text-[10px] font-black text-slate-400 uppercase mb-3">Archive Database</label>
                 <input type="file" id="archiveFile" class="text-xs w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-orange-500 file:text-white font-bold cursor-pointer"/>
             </div>
         </div>
 
-        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-lg shadow-xl hover:bg-blue-600 transition-all mb-12 transform hover:-translate-y-1 active:translate-y-0">
-            DECODE & ANALYZE GLOBAL DATA
+        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-lg shadow-xl hover:bg-blue-600 transition-all mb-12">
+            RUN GLOBAL ANALYSIS
         </button>
 
         <div id="dashboard" class="hidden space-y-8 pb-20">
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-slate-200 text-center"><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Total</p><p id="totalCount" class="text-2xl font-black">0</p></div>
+                <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-slate-200 text-center"><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Drill-down Total</p><p id="totalCount" class="text-2xl font-black">0</p></div>
                 <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-bold text-blue-400 uppercase mb-1">Active</p><p id="currentCount" class="text-2xl font-black">0</p></div>
                 <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-bold text-orange-400 uppercase mb-1">Archive</p><p id="archiveCount" class="text-2xl font-black">0</p></div>
                 <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-purple-500 text-center"><p class="text-[10px] font-bold text-purple-400 uppercase mb-1">Top System</p><p id="topSystem" class="text-sm font-black truncate">-</p></div>
@@ -55,87 +55,65 @@
                 <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-indigo-500 text-center"><p class="text-[10px] font-bold text-indigo-400 uppercase mb-1">Peak Year</p><p id="peakYear" class="text-2xl font-black">0</p></div>
             </div>
 
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest">Unmatched Locations (Review List)</h3>
+                    <button onclick="exportReviewList()" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-blue-200 transition-colors">
+                        Download Review CSV
+                    </button>
+                </div>
+                <div class="max-h-60 overflow-y-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead><tr class="border-b text-[10px] text-slate-400 uppercase"><th>Raw Input String</th><th>Ticket Count</th></tr></thead>
+                        <tbody id="unmatchedTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white p-8 rounded-3xl shadow-sm"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Service Fault Systems</h3><div class="h-80"><canvas id="chartSrv"></canvas></div></div>
                 <div class="bg-white p-8 rounded-3xl shadow-sm"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">PRTG Infrastructure</h3><div class="h-80"><canvas id="chartPrtg"></canvas></div></div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-4">Unmatched Conventions (Review List)</h3>
-                    <div class="max-h-60 overflow-y-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead><tr class="border-b text-[10px] text-slate-400 uppercase"><th>Raw String</th><th>Count</th></tr></thead>
-                            <tbody id="unmatchedTable"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="bg-slate-900 p-8 rounded-3xl shadow-xl text-white flex flex-col items-center">
-                    <h3 class="text-xs font-bold uppercase mb-6 text-slate-500 text-center">Tech Keywords</h3>
-                    <div id="keywordCloud" class="flex flex-wrap justify-center gap-2"></div>
-                </div>
-            </div>
-
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white p-8 rounded-3xl shadow-sm"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Year-on-Year Growth</h3><div class="h-80"><canvas id="chartYoY"></canvas></div></div>
-                <div class="bg-white p-8 rounded-3xl shadow-sm"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Priority Breakdown</h3><div class="h-80"><canvas id="chartPri"></canvas></div></div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Engineer Leaderboard (Active Only)</h3><div class="h-80"><canvas id="chartEng"></canvas></div></div>
             </div>
-
-            <div class="bg-white p-8 rounded-3xl shadow-sm"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Engineer Performance</h3><div class="h-80"><canvas id="chartEng"></canvas></div></div>
         </div>
     </div>
 
     <script>
         let charts = {};
         let masterData = [];
+        let unmatchedDataForExport = [];
 
-        // FULL ISO COUNTRY DATABASE
-        const countryMap = {"AF":"Afghanistan","AX":"Aland Islands","AL":"Albania","DZ":"Algeria","AS":"American Samoa","AD":"Andorra","AO":"Angola","AI":"Anguilla","AQ":"Antarctica","AG":"Antigua and Barbuda","AR":"Argentina","AM":"Armenia","AW":"Aruba","AU":"Australia","AT":"Austria","AZ":"Azerbaijan","BS":"Bahamas","BH":"Bahrain","BD":"Bangladesh","BB":"Barbados","BY":"Belarus","BE":"Belgium","BZ":"Belize","BJ":"Benin","BM":"Bermuda","BT":"Bhutan","BO":"Bolivia","BQ":"Bonaire, Sint Eustatius and Saba","BA":"Bosnia and Herzegovina","BW":"Botswana","BV":"Bouvet Island","BR":"Brazil","IO":"British Indian Ocean Territory","BN":"Brunei Darussalam","BG":"Bulgaria","BF":"Burkina Faso","BI":"Burundi","KH":"Cambodia","CM":"Cameroon","CA":"Canada","CV":"Cape Verde","KY":"Cayman Islands","CF":"Central African Republic","TD":"Chad","CL":"Chile","CN":"China","CX":"Christmas Island","CC":"Cocos (Keeling) Islands","CO":"Colombia","KM":"Comoros","CG":"Congo","CD":"Congo, Democratic Republic of the","CK":"Cook Islands","CR":"Costa Rica","CI":"Cote d'Ivoire","HR":"Croatia","CU":"Cuba","CW":"Curacao","CY":"Cyprus","CZ":"Czech Republic","DK":"Denmark","DJ":"Djibouti","DM":"Dominica","DO":"Dominican Republic","EC":"Ecuador","EG":"Egypt","SV":"El Salvador","GQ":"Equatorial Guinea","ER":"Eritrea","EE":"Estonia","ET":"Ethiopia","FK":"Falkland Islands (Malvinas)","FO":"Faroe Islands","FJ":"Fiji","FI":"Finland","FR":"France","GF":"French Guiana","PF":"French Polynesia","TF":"French Southern Territories","GA":"Gabon","GM":"Gambia","GE":"Georgia","DE":"Germany","GH":"Ghana","GI":"Gibraltar","GR":"Greece","GL":"Greenland","GD":"Grenada","GP":"Guadeloupe","GU":"Guam","GT":"Guatemala","GG":"Guernsey","GN":"Guinea","GW":"Guinea-Bissau","GY":"Guyana","HT":"Haiti","HM":"Heard Island and McDonald Islands","VA":"Holy See (Vatican City State)","HN":"Honduras","HK":"Hong Kong","HU":"Hungary","IS":"Iceland","IN":"India","ID":"Indonesia","IR":"Iran, Islamic Republic of","IQ":"Iraq","IE":"Ireland","IM":"Isle of Man","IL":"Israel","IT":"Italy","JM":"Jamaica","JP":"Japan","JE":"Jersey","JO":"Jordan","KZ":"Kazakhstan","KE":"Kenya","KI":"Kiribati","KP":"Korea, Democratic People's Republic of","KR":"Korea, Republic of","KW":"Kuwait","KG":"Kyrgyzstan","LA":"Lao People's Democratic Republic","LV":"Latvia","LB":"Lebanon","LS":"Lesotho","LR":"Liberia","LY":"Libya","LI":"Liechtenstein","LT":"Lithuania","LU":"Luxembourg","MO":"Macao","MK":"Macedonia, the Former Yugoslav Republic of","MG":"Madagascar","MW":"Malawi","MY":"Malaysia","MV":"Maldives","ML":"Mali","MT":"Malta","MH":"Marshall Islands","MQ":"Martinique","MR":"Mauritania","MU":"Mauritius","YT":"Mayotte","MX":"Mexico","FM":"Micronesia, Federated States of","MD":"Moldova, Republic of","MC":"Monaco","MN":"Mongolia","ME":"Montenegro","MS":"Montserrat","MA":"Morocco","MZ":"Mozambique","MM":"Myanmar","NA":"Namibia","NR":"Nauru","NP":"Nepal","NL":"Netherlands","NC":"New Caledonia","NZ":"New Zealand","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","NU":"Niue","NF":"Norfolk Island","MP":"Northern Mariana Islands","NO":"Norway","OM":"Oman","PK":"Pakistan","PW":"Palau","PS":"Palestinian Territory, Occupied","PA":"Panama","PG":"Papua New Guinea","PY":"Paraguay","PE":"Peru","PH":"Philippines","PN":"Pitcairn","PL":"Poland","PT":"Portugal","PR":"Puerto Rico","QA":"Qatar","RE":"Reunion","RO":"Romania","RU":"Russian Federation","RW":"Rwanda","BL":"Saint Barthelemy","SH":"Saint Helena","KN":"Saint Kitts and Nevis","LC":"Saint Lucia","MF":"Saint Martin","PM":"Saint Pierre and Miquelon","VC":"Saint Vincent and the Grenadines","WS":"Samoa","SM":"San Marino","ST":"Sao Tome and Principe","SA":"Saudi Arabia","SN":"Senegal","RS":"Serbia","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapore","SX":"Sint Maarten","SK":"Slovakia","SI":"Slovenia","SB":"Solomon Islands","SO":"Somalia","ZA":"South Africa","GS":"South Georgia and the South Sandwich Islands","SS":"South Sudan","ES":"Spain","LK":"Sri Lanka","SD":"Sudan","SR":"Suriname","SJ":"Svalbard and Jan Mayen","SZ":"Swaziland","SE":"Sweden","CH":"Switzerland","SY":"Syrian Arab Republic","TW":"Taiwan, Province of China","TJ":"Tajikistan","TZ":"Tanzania, United Republic of","TH":"Thailand","TL":"Timor-Leste","TG":"Togo","TK":"Tokelau","TO":"Tonga","TT":"Trinidad and Tobago","TN":"Tunisia","TR":"Turkey","TM":"Turkmenistan","TC":"Turks and Caicos Islands","TV":"Tuvalu","UG":"Uganda","UA":"Ukraine","AE":"United Arab Emirates","GB":"United Kingdom","US":"United States","UM":"United States Minor Outlying Islands","UY":"Uruguay","UZ":"Uzbekistan","VU":"Vanuatu","VE":"Venezuela, Bolivarian Republic of","VN":"Viet Nam","VG":"Virgin Islands, British","VI":"Virgin Islands, U.S.","WF":"Wallis and Futuna","EH":"Western Sahara","YE":"Yemen","ZM":"Zambia","ZW":"Zimbabwe"};
+        // ISO Country Map... (Assuming same as previous version)
+        const countryMap = {"AF":"Afghanistan","AX":"Aland Islands","AL":"Albania","DZ":"Algeria","AS":"American Samoa","AD":"Andorra","AO":"Angola","AI":"Anguilla","AQ":"Antarctica","AG":"Antigua and Barbuda","AR":"Argentina","AM":"Armenia","AW":"Aruba","AU":"Australia","AT":"Austria","AZ":"Azerbaijan","BS":"Bahamas","BH":"Bahrain","BD":"Bangladesh","BB":"Barbados","BY":"Belarus","BE":"Belgium","BZ":"Belize","BJ":"Benin","BM":"Bermuda","BT":"Bhutan","BO":"Bolivia","BQ":"Bonaire, Sint Eustatius and Saba","BA":"Bosnia and Herzegovina","BW":"Botswana","BV":"Bouvet Island","BR":"Brazil","IO":"British Indian Ocean Territory","BN":"Brunei Darussalam","BG":"Bulgaria","BF":"Burkina Faso","BI":"Burundi","KH":"Cambodia","CM":"Cameroon","CA":"Canada","CV":"Cape Verde","KY":"Cayman Islands","CF":"Central African Republic","TD":"Chad","CL":"Chile","CN":"China","CX":"Christmas Island","CC":"Cocos (Keeling) Islands","CO":"Colombia","KM":"Comoros","CG":"Congo","CD":"Congo, Democratic Republic of the","CK":"Cook Islands","CR":"Costa Rica","CI":"Cote d'Ivoire","HR":"Croatia","CU":"Cuba","CW":"Curacao","CY":"Cyprus","CZ":"Czech Republic","DK":"Denmark","DJ":"Djibouti","DM":"Dominica","DO":"Dominican Republic","EC":"Ecuador","EG":"Egypt","SV":"El Salvador","GQ":"Equatorial Guinea","ER":"Eritrea","EE":"Estonia","ET":"Ethiopia","FK":"Falkland Islands (Malvinas)","FO":"Faroe Islands","FJ":"Fiji","FI":"Finland","FR":"France","GF":"French Guiana","PF":"French Polynesia","TF":"French Southern Territories","GA":"Gabon","GM":"Gambia","GE":"Georgia","DE":"Germany","GH":"Ghana","GI":"Gibraltar","GR":"Greece","GL":"Greenland","GD":"Grenada","GP":"Guadeloupe","GU":"Guam","GT":"Guatemala","GG":"Guernsey","GN":"Guinea","GW":"Guinea-Bissau","GY":"Guyana","HT":"Haiti","HM":"Heard Island and McDonald Islands","VA":"Holy See (Vatican City State)","HN":"Honduras","HK":"Hong Kong","HU":"Hungary","IS":"Iceland","IN":"India","ID":"Indonesia","IR":"Iran, Islamic Republic of","IQ":"Iraq","IE":"Ireland","IM":"Isle of Man","IL":"Israel","IT":"Italy","JM":"Jamaica","JP":"Japan","JE":"Jersey","JO":"Jordan","KZ":"Kazakhstan","KE":"Kenya","KI":"Kiribati","KP":"Korea, Democratic People's Republic of","KR":"Korea, Republic of","KW":"Kuwait","KG":"Kyrgyzstan","LA":"Lao People's Republic","LV":"Latvia","LB":"Lebanon","LS":"Lesotho","LR":"Liberia","LY":"Libya","LI":"Liechtenstein","LT":"Lithuania","LU":"Luxembourg","MO":"Macao","MK":"Macedonia","MG":"Madagascar","MW":"Malawi","MY":"Malaysia","MV":"Maldives","ML":"Mali","MT":"Malta","MH":"Marshall Islands","MQ":"Martinique","MR":"Mauritania","MU":"Mauritius","YT":"Mayotte","MX":"Mexico","FM":"Micronesia","MD":"Moldova","MC":"Monaco","MN":"Mongolia","ME":"Montenegro","MS":"Montserrat","MA":"Morocco","MZ":"Mozambique","MM":"Myanmar","NA":"Namibia","NR":"Nauru","NP":"Nepal","NL":"Netherlands","NC":"New Caledonia","NZ":"New Zealand","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","NU":"Niue","NF":"Norfolk Island","MP":"Northern Mariana Islands","NO":"Norway","OM":"Oman","PK":"Pakistan","PW":"Palau","PS":"Palestine","PA":"Panama","PG":"Papua New Guinea","PY":"Paraguay","PE":"Peru","PH":"Philippines","PN":"Pitcairn","PL":"Poland","PT":"Portugal","PR":"Puerto Rico","QA":"Qatar","RE":"Reunion","RO":"Romania","RU":"Russian Federation","RW":"Rwanda","BL":"Saint Barthelemy","SH":"Saint Helena","KN":"Saint Kitts and Nevis","LC":"Saint Lucia","MF":"Saint Martin","PM":"Saint Pierre and Miquelon","VC":"Saint Vincent","WS":"Samoa","SM":"San Marino","ST":"Sao Tome and Principe","SA":"Saudi Arabia","SN":"Senegal","RS":"Serbia","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapore","SX":"Sint Maarten","SK":"Slovakia","SI":"Slovenia","SB":"Solomon Islands","SO":"Somalia","ZA":"South Africa","GS":"South Georgia","SS":"South Sudan","ES":"Spain","LK":"Sri Lanka","SD":"Sudan","SR":"Suriname","SJ":"Svalbard and Jan Mayen","SZ":"Swaziland","SE":"Sweden","CH":"Switzerland","SY":"Syrian Arab Republic","TW":"Taiwan","TJ":"Tajikistan","TZ":"Tanzania","TH":"Thailand","TL":"Timor-Leste","TG":"Togo","TK":"Tokelau","TO":"Tonga","TT":"Trinidad and Tobago","TN":"Tunisia","TR":"Turkey","TM":"Turkmenistan","TC":"Turks and Caicos Islands","TV":"Tuvalu","UG":"Uganda","UA":"Ukraine","AE":"United Arab Emirates","GB":"United Kingdom","US":"United States","UM":"United States Minor Outlying Islands","UY":"Uruguay","UZ":"Uzbekistan","VU":"Vanuatu","VE":"Venezuela","VN":"Viet Nam","VG":"Virgin Islands, British","VI":"Virgin Islands, U.S.","WF":"Wallis and Futuna","EH":"Western Sahara","YE":"Yemen","ZM":"Zambia","ZW":"Zimbabwe"};
 
         function autoTidy(text) {
             if (!text) return "Unspecified";
             let clean = text.toString().trim();
             let upper = clean.toUpperCase();
-            
-            // 1. Try Prefix matching (MY-MDC -> Malaysia)
             let prefix = upper.split(/[\-\_\s]/)[0];
             if (countryMap[prefix]) return countryMap[prefix];
-
-            // 2. Try keyword matching (if text contains "Malaysia")
             for (let code in countryMap) {
-                let name = countryMap[code].toUpperCase();
-                if (upper.includes(name)) return countryMap[code];
+                if (upper.includes(countryMap[code].toUpperCase())) return countryMap[code];
             }
-
-            // 3. Fallback to raw string for review
-            return "Review: " + clean.substring(0, 20);
+            return "Review: " + clean.substring(0, 30);
         }
 
         async function processData() {
-            try {
-                const curF = document.getElementById('currentFile').files[0];
-                const arcF = document.getElementById('archiveFile').files[0];
-                if (!curF || !arcF) return alert("Upload both files.");
-
-                setStatus("Decoding Global Sites...");
-                const curRaw = await parseCSV(curF);
-                const arcRaw = await parseCSV(arcF);
-
-                masterData = [...ingest(curRaw, 'Active'), ...ingest(arcRaw, 'Archive')];
-                
-                const regions = [...new Set(masterData.map(d => d.Region))].filter(Boolean).sort();
-                const sel = document.getElementById('regionSelector');
-                sel.innerHTML = '<option value="ALL">All Regions (Global)</option>';
-                regions.forEach(r => { let o = document.createElement('option'); o.value = r; o.innerText = r; sel.appendChild(o); });
-
-                document.getElementById('filterArea').classList.remove('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
-                updateLocationList();
-                setStatus("Global Analysis Ready");
-            } catch (err) {
-                console.error(err);
-                setStatus("Error: Column Match Failed");
-            }
+            const curF = document.getElementById('currentFile').files[0];
+            const arcF = document.getElementById('archiveFile').files[0];
+            if (!curF || !arcF) return alert("Select files.");
+            setStatus("Processing...");
+            const curRaw = await parseCSV(curF);
+            const arcRaw = await parseCSV(arcF);
+            masterData = [...ingest(curRaw, 'Active'), ...ingest(arcRaw, 'Archive')];
+            buildFilters();
+            applyFilters();
+            document.getElementById('dashboard').classList.remove('hidden');
+            setStatus("Dashboard Ready");
         }
 
         function ingest(data, source) {
@@ -146,7 +124,7 @@
                 sys: find(['system', 'type', 'category']),
                 date: find(['date', 'created']),
                 reg: find(['region', 'site', 'area']),
-                loc: find(['location', 'country', 'city', 'subsite']),
+                loc: find(['location', 'country', 'city']),
                 pri: find(['priority', 'rating']),
                 eng: find(['assigned', 'owner', 'engineer']),
                 stat: find(['status', 'state']),
@@ -173,10 +151,18 @@
                     Priority: (r[cols.pri] || "P3").toString().trim(),
                     Engineer: r[cols.eng] || "Unassigned",
                     Status: (r[cols.stat] || "Open").toString().toLowerCase(),
-                    Desc: (r[cols.desc] || "").toString(),
                     Year: yr, Quarter: q
                 };
             });
+        }
+
+        function buildFilters() {
+            const regions = [...new Set(masterData.map(d => d.Region))].filter(Boolean).sort();
+            const sel = document.getElementById('regionSelector');
+            sel.innerHTML = '<option value="ALL">All Regions (Global)</option>';
+            regions.forEach(r => { let o = document.createElement('option'); o.value = r; o.innerText = r; sel.appendChild(o); });
+            document.getElementById('filterArea').classList.remove('hidden');
+            updateLocationList();
         }
 
         function updateLocationList() {
@@ -184,7 +170,7 @@
             const subData = (selectedReg === "ALL") ? masterData : masterData.filter(d => d.Region === selectedReg);
             const locations = [...new Set(subData.map(d => d.Location))].filter(Boolean).sort();
             const locSelector = document.getElementById('locationSelector');
-            locSelector.innerHTML = '<option value="ALL">All Standardized Locations</option>';
+            locSelector.innerHTML = '<option value="ALL">All Locations</option>';
             locations.forEach(l => { let o = document.createElement('option'); o.value = l; o.innerText = l; locSelector.appendChild(o); });
             applyFilters();
         }
@@ -204,43 +190,49 @@
             document.getElementById('archiveCount').innerText = data.filter(d => d.Source === 'Archive').length.toLocaleString();
 
             const srv = countOcc(data.filter(d => !d.isPRTG), 'System');
-            document.getElementById('topSystem').innerText = Object.keys(srv)[0] || '-';
             draw('chartSrv', 'bar', Object.keys(srv).slice(0, 10), [{ label: 'Faults', data: Object.values(srv).slice(0, 10), backgroundColor: '#8b5cf6', borderRadius: 6 }]);
 
             const prtg = countOcc(data.filter(d => d.isPRTG), 'System');
             draw('chartPrtg', 'bar', Object.keys(prtg).slice(0, 10), [{ label: 'Alerts', data: Object.values(prtg).slice(0, 10), backgroundColor: '#ec4899', borderRadius: 6 }]);
 
+            // Update Review Table & Global Export Variable
             const unmatched = data.filter(d => d.Location.startsWith("Review:"));
             const unFreq = countOcc(unmatched, 'RawLoc');
-            document.getElementById('unmatchedTable').innerHTML = Object.entries(unFreq).slice(0, 15).map(([raw, count]) => 
-                `<tr class="border-b"><td class="py-2 text-slate-600 truncate max-w-[250px]">${raw}</td><td class="py-2 font-bold">${count}</td></tr>`
+            unmatchedDataForExport = Object.entries(unFreq);
+            document.getElementById('unmatchedTable').innerHTML = unmatchedDataForExport.slice(0, 20).map(([raw, count]) => 
+                `<tr class="border-b"><td class="py-2 text-slate-600 truncate max-w-[300px]">${raw}</td><td class="py-2 font-bold">${count}</td></tr>`
             ).join('');
 
-            const yrs = countOcc(data, 'Year');
-            document.getElementById('peakYear').innerText = Object.keys(yrs)[0] || '0';
+            const eng = countOcc(data.filter(d => d.Source === 'Active' && d.Status.includes('complete')), 'Engineer');
+            draw('chartEng', 'bar', Object.keys(eng).slice(0, 10), [{ label: 'Closed', data: Object.values(eng).slice(0, 10), backgroundColor: '#10b981', borderRadius: 6 }], true);
 
             const yMap = {};
             data.forEach(d => { if(d.Year !== "Unknown") { if(!yMap[d.Year]) yMap[d.Year]={Q1:0,Q2:0,Q3:0,Q4:0}; yMap[d.Year][d.Quarter]++; } });
-            const ds = Object.keys(yMap).sort().map((y, i) => ({ label: y, data: ["Q1","Q2","Q3","Q4"].map(q => yMap[y][q]), borderColor: ['#2563eb','#10b981','#f59e0b','#ef4444'][i%4], tension: 0.4, fill: false }));
+            const ds = Object.keys(yMap).sort().map((y, i) => ({ label: y, data: ["Q1","Q2","Q3","Q4"].map(q => yMap[y][q]), borderColor: ['#2563eb','#10b981','#f59e0b','#ef4444'][i%4], tension: 0.4 }));
             draw('chartYoY', 'line', ["Q1","Q2","Q3","Q4"], ds);
-
-            const pL = [...new Set(data.map(d => d.Priority))].sort();
-            draw('chartPri', 'bar', pL, [{ label: 'Active', data: pL.map(l => data.filter(d=>d.Priority===l && d.Source==='Active').length), backgroundColor: '#2563eb', borderRadius: 4 }, { label: 'Archive', data: pL.map(l => data.filter(d=>d.Priority===l && d.Source==='Archive').length), backgroundColor: '#fb923c', borderRadius: 4 }]);
-
-            const eng = countOcc(data.filter(d => d.Source === 'Active' && d.Status.includes('complete')), 'Engineer');
-            document.getElementById('topEngineer').innerText = Object.keys(eng)[0] || '-';
-            draw('chartEng', 'bar', Object.keys(eng).slice(0, 10), [{ label: 'Closed', data: Object.values(eng).slice(0, 10), backgroundColor: '#10b981', borderRadius: 6 }], true);
-
-            const words = data.slice(0, 2000).map(d => d.Desc).join(' ').toLowerCase().match(/\b(\w{5,})\b/g) || [];
-            const freq = {}; words.forEach(w => { if(!['please','thank','regarding'].includes(w)) freq[w] = (freq[w] || 0) + 1; });
-            const srt = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0, 15);
-            document.getElementById('keywordCloud').innerHTML = srt.map(([w, c]) => `<span class="bg-slate-800 px-3 py-1 rounded text-[10px] uppercase text-blue-100 shadow-md">${w} <span class="text-blue-400 ml-1 font-bold">${c}</span></span>`).join('');
         }
 
-        function parseCSV(file) { return new Promise((resolve) => Papa.parse(file, { header: true, skipEmptyLines: true, complete: r => resolve(r.data) })); }
+        // --- NEW CSV EXPORT FUNCTION ---
+        function exportReviewList() {
+            if (unmatchedDataForExport.length === 0) return alert("No items to export.");
+            let csvContent = "Raw Input Location,Ticket Count,Corrected Mapping\n";
+            unmatchedDataForExport.forEach(row => {
+                csvContent += `"${row[0]}",${row[1]},\n`;
+            });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Helpdesk_Review_List.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function parseCSV(file) { return new Promise(resolve => Papa.parse(file, { header: true, skipEmptyLines: true, complete: r => resolve(r.data) })); }
         function setStatus(msg) { document.getElementById('systemStatus').innerText = msg; }
-        function countOcc(arr, k) { const c = {}; arr.forEach(i => { let v = i[k] || "Unknown"; if(!["Unknown","8888"].includes(v)) c[v] = (c[v] || 0) + 1; }); return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1])); }
-        function draw(id, type, labels, datasets, isH) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id), { type: type, data: { labels, datasets }, options: { maintainAspectRatio: false, indexAxis: isH ? 'y' : 'x', plugins: { legend: { display: (type==='line'||id==='chartPri') } } } }); }
+        function countOcc(arr, k) { const c = {}; arr.forEach(i => { let v = i[k] || "Unknown"; c[v] = (c[v] || 0) + 1; }); return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1])); }
+        function draw(id, type, labels, datasets, isH) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id), { type: type, data: { labels, datasets }, options: { maintainAspectRatio: false, indexAxis: isH ? 'y' : 'x', plugins: { legend: { display: (type==='line') } } } }); }
     </script>
 </body>
 </html>
