@@ -13,10 +13,10 @@
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Helpdesk Analytics Engine</h1>
-                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs italic">Advanced Infrastructure Parsing | Combined Year-on-Year Insights</p>
+                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs italic">System-Type Logic | Combined Priority & YoY | Peak Year Analysis</p>
             </div>
             <div class="bg-white p-2 px-4 rounded-lg shadow-sm border border-slate-200">
-                <span id="processStatus" class="text-[10px] text-blue-600 font-black uppercase tracking-tighter">System Ready</span>
+                <span id="processStatus" class="text-[10px] text-blue-600 font-black uppercase tracking-tighter text-center block">System Ready</span>
             </div>
         </header>
 
@@ -32,44 +32,44 @@
         </div>
 
         <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-slate-800 transition-all mb-12 border-b-4 border-slate-700 active:border-b-0 active:translate-y-1">
-            Generate Intelligence Dashboard
+            Analyze Combined Databases
         </button>
 
         <div id="dashboard" class="hidden space-y-8 pb-20">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-300 text-center"><p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Entries</p><p id="totalCount" class="text-3xl font-black text-slate-900">0</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-black text-blue-400 uppercase mb-1 text-center">Active DB</p><p id="currentCount" class="text-3xl font-black text-slate-900">0</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-black text-orange-400 uppercase mb-1 text-center">Archive DB</p><p id="archiveCount" class="text-3xl font-black text-slate-900">0</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-purple-500 text-center"><p class="text-[10px] font-black text-purple-400 uppercase mb-1 text-center">Top Service System</p><p id="topSystem" class="text-lg font-bold text-slate-800">-</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-300 text-center"><p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Unique</p><p id="totalCount" class="text-3xl font-black text-slate-900">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-black text-blue-400 uppercase mb-1">Active DB</p><p id="currentCount" class="text-3xl font-black text-slate-900">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-black text-orange-400 uppercase mb-1">Archive DB</p><p id="archiveCount" class="text-3xl font-black text-slate-900">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-purple-500 text-center"><p class="text-[10px] font-black text-purple-400 uppercase mb-1 text-center">Top System</p><p id="topSystem" class="text-lg font-bold text-slate-800">-</p></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500 text-center"><p class="text-[10px] font-black text-emerald-400 uppercase mb-1">Lead Eng</p><p id="topEngineer" class="text-lg font-bold truncate">-</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-indigo-500 text-center"><p class="text-[10px] font-black text-indigo-500 uppercase mb-1">Peak Year</p><p id="peakYear" class="text-3xl font-black text-slate-900">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-indigo-500 text-center"><p class="text-[10px] font-black text-indigo-500 uppercase mb-1">Peak Year</p><p id="peakYear" class="text-3xl font-bold text-slate-900">-</p></div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Top 10 Fault Systems (Service Only - No PRTG)</h3>
+                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Service Fault Systems (No PRTG)</h3>
                     <div class="h-80"><canvas id="topSystemsChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">PRTG Infrastructure Breakdown (By Group)</h3>
+                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">PRTG Infrastructure Systems</h3>
                     <div class="h-80"><canvas id="prtgBreakdownChart"></canvas></div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Year-on-Year Comparison (Combined Active & Archive)</h3>
+                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Year-on-Year Volume (Combined Data)</h3>
                     <div class="h-80"><canvas id="quarterlyChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Priority Distribution (Combined Active & Archive)</h3>
+                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Combined Priority Distribution</h3>
                     <div class="h-80"><canvas id="priorityChart"></canvas></div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Lead Engineer Leaderboard (Active Database Only)</h3>
+                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Engineer Performance (Active DB)</h3>
                     <div class="h-80"><canvas id="engineerChart"></canvas></div>
                 </div>
                 <div class="bg-slate-900 p-6 rounded-2xl shadow-xl text-white">
@@ -86,7 +86,7 @@
         async function processData() {
             const curFile = document.getElementById('currentFile').files[0];
             const arcFile = document.getElementById('archiveFile').files[0];
-            if (!curFile || !arcFile) return alert("Please select both files.");
+            if (!curFile || !arcFile) return alert("Select files.");
 
             document.getElementById('processStatus').innerText = "PROCESSING...";
 
@@ -111,36 +111,19 @@
                 return ticketNum && ticketNum.toString().trim() !== "";
             }).map(row => {
                 const id = (row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID']).toString().trim();
-                const desc = (row['Description'] || "").toString().toUpperCase();
-                let systemRaw = (row['System Type'] || "").toString().trim();
+                const systemRaw = (row['System Type'] || "").toString().trim();
                 
-                // --- ADVANCED INFRASTRUCTURE CLASSIFICATION ---
-                let isPRTG = systemRaw.toUpperCase().includes("PRTG");
-                let prtgCategory = "Other PRTG";
-
-                if (isPRTG) {
-                    // Method A: Keyword Matching (Most accurate for dashboards)
-                    if (desc.includes("CCTV") || desc.includes("CAMERA") || desc.includes("NVR") || desc.includes("HIK")) prtgCategory = "PRTG: CCTV";
-                    else if (desc.includes("SERVER") || desc.includes("HOST") || desc.includes("ESXI") || desc.includes("VMWARE")) prtgCategory = "PRTG: Servers";
-                    else if (desc.includes("DOOR") || desc.includes("ACCESS") || desc.includes("SECURITY")) prtgCategory = "PRTG: Door Access";
-                    else if (desc.includes("UPS") || desc.includes("POWER") || desc.includes("BATTERY")) prtgCategory = "PRTG: Power/UPS";
-                    else if (desc.includes("SWITCH") || desc.includes("WIFI") || desc.includes("ROUTER")) prtgCategory = "PRTG: Network Gear";
-                    else if (desc.includes("PING") || desc.includes("ICMP")) prtgCategory = "PRTG: Connectivity";
-                    else {
-                        // Method B: Text Extraction Fallback
-                        const deviceMatch = desc.match(/DEVICE:\s*([^,.\n\-]+)/i) || desc.match(/PRTG\s*-\s*([^:.\n\-]+)/i);
-                        prtgCategory = deviceMatch ? "PRTG: " + deviceMatch[1].trim() : "PRTG: Infrastructure";
-                    }
-                }
+                // Simplified Separation Logic
+                const isPRTG = systemRaw.toUpperCase().includes("PRTG");
 
                 // Date logic (Strict DD/MM/YYYY)
                 const dateStr = (row['Date'] || "").toString().trim();
                 let year = "Unknown", quarter = "Q1";
                 const parts = dateStr.split('/');
                 if (parts.length >= 3) {
-                    const d = parseInt(parts[0]), m = parseInt(parts[1]) - 1;
-                    const y = parts[2].split(' ')[0];
-                    const dObj = new Date(y, m, d);
+                    const day = parseInt(parts[0]), month = parseInt(parts[1]) - 1;
+                    const fullYear = parts[2].split(' ')[0];
+                    const dObj = new Date(fullYear, month, day);
                     if (!isNaN(dObj.getTime())) {
                         year = dObj.getFullYear().toString();
                         quarter = "Q" + (Math.floor(dObj.getMonth() / 3) + 1);
@@ -154,18 +137,18 @@
                     AssignedTo: cleanName(row['Assigned To']),
                     SystemType: sanitizeSystem(systemRaw),
                     isPRTG: isPRTG,
-                    PRTGCategory: prtgCategory,
-                    FullDesc: desc,
+                    FullDesc: (row['Description'] || "").toString(),
                     Year: year, Quarter: quarter
                 };
             });
         }
 
         function sanitizeSystem(val) {
-            if (!val) return "Other";
+            if (!val) return "Invalid";
             let clean = val.toString().replace(/[\[\]"]/g, '').trim();
+            if (clean === "" || !isNaN(clean)) return "Invalid";
             const stop = ["UNKNOWN", "OTHER", "N/A", "NONE", "NULL", "8888"];
-            if (clean === "" || !isNaN(clean) || stop.includes(clean.toUpperCase())) return "Invalid";
+            if (stop.includes(clean.toUpperCase())) return "Invalid";
             return clean;
         }
 
@@ -185,26 +168,26 @@
             document.getElementById('currentCount').innerText = curLen.toLocaleString();
             document.getElementById('archiveCount').innerText = arcLen.toLocaleString();
 
-            // 1. Systems Ranking (EXCLUDING PRTG)
-            const standardFaults = master.filter(d => !d.isPRTG && d.SystemType !== "Invalid");
-            const sysFreq = countOcc(standardFaults, 'SystemType');
-            const top10Systems = Object.entries(sysFreq).slice(0, 10);
-            document.getElementById('topSystem').innerText = top10Systems[0] ? top10Systems[0][0] : 'N/A';
-            updateChart('topSystemsChart', 'bar', top10Systems.map(s => s[0]), [{ label: 'Faults', data: top10Systems.map(s => s[1]), backgroundColor: '#8b5cf6', borderRadius: 4 }], false);
+            // 1. Service Ranking (No PRTG)
+            const serviceFaults = master.filter(d => !d.isPRTG && d.SystemType !== "Invalid");
+            const serviceFreq = countOcc(serviceFaults, 'SystemType');
+            const top10Service = Object.entries(serviceFreq).slice(0, 10);
+            document.getElementById('topSystem').innerText = top10Service[0] ? top10Service[0][0] : 'N/A';
+            updateChart('topSystemsChart', 'bar', top10Service.map(s => s[0]), [{ label: 'Service Jobs', data: top10Service.map(s => s[1]), backgroundColor: '#8b5cf6', borderRadius: 4 }], false);
 
-            // 2. PRTG Breakdown (ONLY PRTG)
-            const prtgOnly = master.filter(d => d.isPRTG);
-            const prtgFreq = countOcc(prtgOnly, 'PRTGCategory');
+            // 2. PRTG Ranking
+            const prtgFaults = master.filter(d => d.isPRTG && d.SystemType !== "Invalid");
+            const prtgFreq = countOcc(prtgFaults, 'SystemType');
             const top10PRTG = Object.entries(prtgFreq).slice(0, 10);
-            updateChart('prtgBreakdownChart', 'bar', top10PRTG.map(s => s[0]), [{ label: 'Alerts', data: top10PRTG.map(s => s[1]), backgroundColor: '#ec4899', borderRadius: 4 }], false);
+            updateChart('prtgBreakdownChart', 'bar', top10PRTG.map(s => s[0]), [{ label: 'Infra Alerts', data: top10PRTG.map(s => s[1]), backgroundColor: '#ec4899', borderRadius: 4 }], false);
 
-            // 3. Peak Year Logic
+            // 3. Peak Year
             const yearCounts = {};
             master.forEach(d => { if(d.Year !== "Unknown") yearCounts[d.Year] = (yearCounts[d.Year] || 0) + 1; });
             const sortedYears = Object.entries(yearCounts).sort((a,b) => b[1] - a[1]);
             document.getElementById('peakYear').innerText = sortedYears[0] ? sortedYears[0][0] : '-';
 
-            // 4. YoY Comparison Chart (Combined)
+            // 4. YoY Quarterly Comparison
             const yearMap = {};
             master.forEach(d => { if(d.Year !== "Unknown") { if(!yearMap[d.Year]) yearMap[d.Year]={Q1:0,Q2:0,Q3:0,Q4:0}; yearMap[d.Year][d.Quarter]++; } });
             const finalYears = Object.keys(yearMap).sort();
@@ -216,11 +199,11 @@
             }));
             updateChart('quarterlyChart', 'line', ["Q1","Q2","Q3","Q4"], datasets);
 
-            // 5. Priority Combined Chart
-            const allPriorities = [...new Set(master.map(d => d.Priority))].sort();
-            updateChart('priorityChart', 'bar', allPriorities, null, false, master);
+            // 5. Priority Distribution (Side-by-Side)
+            const priLabels = [...new Set(master.map(d => d.Priority))].sort();
+            updateChart('priorityChart', 'bar', priLabels, null, false, master);
 
-            // 6. Engineer Leaderboard (Active Only)
+            // 6. Engineer Leaderboard
             const completed = master.filter(d => d.Source === 'Current' && d.Status.toLowerCase().startsWith('complete'));
             const engFreq = countOcc(completed, 'AssignedTo');
             const sortedEng = Object.entries(engFreq).slice(0, 10);
@@ -239,20 +222,27 @@
         function updateChart(id, type, labels, datasets, isH, master) {
             if (charts[id]) charts[id].destroy();
             let finalDatasets = datasets;
+            
             if (id === 'priorityChart') {
                 finalDatasets = [
-                    { label: 'Current Active', data: labels.map(l => master.filter(d=>d.Priority===l && d.Source==='Current').length), backgroundColor: '#2563eb', borderRadius: 4 },
+                    { label: 'Active', data: labels.map(l => master.filter(d=>d.Priority===l && d.Source==='Current').length), backgroundColor: '#2563eb', borderRadius: 4 },
                     { label: 'Archive', data: labels.map(l => master.filter(d=>d.Priority===l && d.Source==='Archive').length), backgroundColor: '#fb923c', borderRadius: 4 }
                 ];
             }
+
             charts[id] = new Chart(document.getElementById(id), {
                 type: type,
                 data: { labels, datasets: finalDatasets },
                 options: { 
                     maintainAspectRatio: false, 
                     indexAxis: isH ? 'y' : 'x',
-                    plugins: { legend: { display: (type === 'line' || id === 'priorityChart'), position: 'top' } },
-                    scales: { y: { beginAtZero: true }, x: { grid: { display: false } } }
+                    plugins: { 
+                        legend: { 
+                            display: (type === 'line' || id === 'priorityChart'), 
+                            position: 'top',
+                            labels: { usePointStyle: true, font: { size: 10, weight: 'bold' } }
+                        } 
+                    }
                 }
             });
         }
@@ -260,12 +250,12 @@
         function analyzeKeywords(data) {
             const text = data.slice(0, 5000).map(d => d.FullDesc).join(' ').toLowerCase();
             const words = text.match(/\b(\w{5,})\b/g) || [];
-            const stop = ['please','thank','would','could','there','evening','hello','regarding','tickets','system','issue','prtg','monitor','alert'];
+            const stop = ['please','thank','would','could','there','evening','hello','regarding','tickets','system','issue','prtg'];
             const freq = {};
             words.forEach(w => { if(!stop.includes(w)) freq[w] = (freq[w] || 0) + 1; });
             const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 20);
             document.getElementById('keywordCloud').innerHTML = sorted.map(([w, c]) => 
-                `<span class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-[10px] font-black uppercase text-blue-100">
+                `<span class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-[10px] font-black uppercase text-blue-100 shadow-md">
                     ${w} <span class="text-blue-400 ml-1">${c}</span>
                 </span>`
             ).join('');
