@@ -8,15 +8,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 min-h-screen p-4 md:p-10 text-slate-900">
+<body class="bg-slate-50 min-h-screen p-4 md:p-10 text-slate-900 font-sans">
     <div class="max-w-7xl mx-auto">
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Helpdesk Analytics Engine</h1>
-                <p class="text-slate-500 font-medium tracking-tight uppercase text-xs italic">System-Type Logic | Combined Priority & YoY | Peak Year Analysis</p>
+                <p class="text-slate-500 font-medium uppercase text-xs italic">Multi-Region Intelligence | PRTG & YoY Suite</p>
             </div>
-            <div class="bg-white p-2 px-4 rounded-lg shadow-sm border border-slate-200">
-                <span id="processStatus" class="text-[10px] text-blue-600 font-black uppercase tracking-tighter text-center block">System Ready</span>
+            
+            <div id="filterContainer" class="hidden flex items-center bg-white p-3 rounded-2xl shadow-sm border border-slate-200">
+                <label class="text-[10px] font-black text-slate-400 uppercase mr-3">Filter by Region:</label>
+                <select id="regionSelector" onchange="applyFilters()" class="bg-slate-50 border-none text-sm font-bold text-blue-600 focus:ring-0 cursor-pointer">
+                    <option value="ALL">All Regions (Global)</option>
+                </select>
             </div>
         </header>
 
@@ -32,14 +36,14 @@
         </div>
 
         <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-slate-800 transition-all mb-12 border-b-4 border-slate-700 active:border-b-0 active:translate-y-1">
-            Analyze Combined Databases
+            Generate Regional Intelligence
         </button>
 
         <div id="dashboard" class="hidden space-y-8 pb-20">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-300 text-center"><p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total Unique</p><p id="totalCount" class="text-3xl font-black text-slate-900">0</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-black text-blue-400 uppercase mb-1">Active DB</p><p id="currentCount" class="text-3xl font-black text-slate-900">0</p></div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-black text-orange-400 uppercase mb-1">Archive DB</p><p id="archiveCount" class="text-3xl font-black text-slate-900">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-black text-blue-400 uppercase mb-1 text-center">Active DB</p><p id="currentCount" class="text-3xl font-black text-slate-900">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-black text-orange-400 uppercase mb-1 text-center">Archive DB</p><p id="archiveCount" class="text-3xl font-black text-slate-900">0</p></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-purple-500 text-center"><p class="text-[10px] font-black text-purple-400 uppercase mb-1 text-center">Top System</p><p id="topSystem" class="text-lg font-bold text-slate-800">-</p></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500 text-center"><p class="text-[10px] font-black text-emerald-400 uppercase mb-1">Lead Eng</p><p id="topEngineer" class="text-lg font-bold truncate">-</p></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-indigo-500 text-center"><p class="text-[10px] font-black text-indigo-500 uppercase mb-1">Peak Year</p><p id="peakYear" class="text-3xl font-bold text-slate-900">-</p></div>
@@ -58,11 +62,11 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Year-on-Year Volume (Combined Data)</h3>
+                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Year-on-Year Volume</h3>
                     <div class="h-80"><canvas id="quarterlyChart"></canvas></div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Combined Priority Distribution</h3>
+                    <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Priority Distribution</h3>
                     <div class="h-80"><canvas id="priorityChart"></canvas></div>
                 </div>
             </div>
@@ -72,8 +76,8 @@
                     <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest mb-6 text-center">Engineer Performance (Active DB)</h3>
                     <div class="h-80"><canvas id="engineerChart"></canvas></div>
                 </div>
-                <div class="bg-slate-900 p-6 rounded-2xl shadow-xl text-white">
-                    <h3 class="font-bold uppercase text-[10px] tracking-widest mb-6 text-center text-slate-400">Technical Keyword Cloud</h3>
+                <div class="bg-slate-900 p-6 rounded-2xl shadow-xl text-white flex flex-col items-center">
+                    <h3 class="font-bold uppercase text-[10px] tracking-widest mb-6 text-slate-400">Technical Keyword Cloud</h3>
                     <div id="keywordCloud" class="flex flex-wrap justify-center gap-2"></div>
                 </div>
             </div>
@@ -82,13 +86,16 @@
 
     <script>
         let charts = {};
+        let masterData = []; // Store raw merged data for filtering
+        let currentDBSize = 0;
+        let archiveDBSize = 0;
 
         async function processData() {
             const curFile = document.getElementById('currentFile').files[0];
             const arcFile = document.getElementById('archiveFile').files[0];
-            if (!curFile || !arcFile) return alert("Select files.");
+            if (!curFile || !arcFile) return alert("Select both files.");
 
-            document.getElementById('processStatus').innerText = "PROCESSING...";
+            document.getElementById('processStatus').innerText = "INGESTING...";
 
             const curRaw = await parseCSV(curFile);
             const arcRaw = await parseCSV(arcFile);
@@ -96,13 +103,48 @@
             const cleanedCur = cleanData(curRaw, 'Current');
             const cleanedArc = cleanData(arcRaw, 'Archive');
 
-            const master = [...cleanedCur, ...cleanedArc];
-            renderDashboard(master, cleanedCur.length, cleanedArc.length);
-            document.getElementById('processStatus').innerText = "DONE";
+            currentDBSize = cleanedCur.length;
+            archiveDBSize = cleanedArc.length;
+            masterData = [...cleanedCur, ...cleanedArc];
+
+            // Setup Region Filter
+            populateRegionFilter(masterData);
+            
+            applyFilters(); // Initial render
+            document.getElementById('processStatus').innerText = "READY";
+            document.getElementById('filterContainer').classList.remove('hidden');
         }
 
         function parseCSV(file) {
             return new Promise(resolve => Papa.parse(file, {header: true, skipEmptyLines: true, complete: r => resolve(r.data)}));
+        }
+
+        function populateRegionFilter(data) {
+            const selector = document.getElementById('regionSelector');
+            selector.innerHTML = '<option value="ALL">All Regions (Global)</option>';
+            
+            const regions = [...new Set(data.map(d => d.Region))].sort();
+            regions.forEach(r => {
+                if(r && r !== "Unknown") {
+                    const opt = document.createElement('option');
+                    opt.value = r;
+                    opt.innerText = r;
+                    selector.appendChild(opt);
+                }
+            });
+        }
+
+        function applyFilters() {
+            const selectedRegion = document.getElementById('regionSelector').value;
+            
+            const filtered = (selectedRegion === "ALL") 
+                ? masterData 
+                : masterData.filter(d => d.Region === selectedRegion);
+
+            const activeCount = filtered.filter(d => d.Source === 'Current').length;
+            const archiveCount = filtered.filter(d => d.Source === 'Archive').length;
+
+            renderDashboard(filtered, activeCount, archiveCount);
         }
 
         function cleanData(data, source) {
@@ -112,8 +154,8 @@
             }).map(row => {
                 const id = (row['Ticket Number'] || row['Ticket Number\u00A0'] || row['ID']).toString().trim();
                 const systemRaw = (row['System Type'] || "").toString().trim();
+                const regionRaw = (row['Region'] || row['Site'] || row['Area'] || "Unknown").toString().trim();
                 
-                // Simplified Separation Logic
                 const isPRTG = systemRaw.toUpperCase().includes("PRTG");
 
                 // Date logic (Strict DD/MM/YYYY)
@@ -121,9 +163,8 @@
                 let year = "Unknown", quarter = "Q1";
                 const parts = dateStr.split('/');
                 if (parts.length >= 3) {
-                    const day = parseInt(parts[0]), month = parseInt(parts[1]) - 1;
-                    const fullYear = parts[2].split(' ')[0];
-                    const dObj = new Date(fullYear, month, day);
+                    const d = parseInt(parts[0]), m = parseInt(parts[1]) - 1, y = parts[2].split(' ')[0];
+                    const dObj = new Date(y, m, d);
                     if (!isNaN(dObj.getTime())) {
                         year = dObj.getFullYear().toString();
                         quarter = "Q" + (Math.floor(dObj.getMonth() / 3) + 1);
@@ -131,7 +172,7 @@
                 }
 
                 return {
-                    ...row, TicketID: id, Source: source,
+                    ...row, TicketID: id, Source: source, Region: regionRaw,
                     Priority: (row['Priority Rating'] || 'Unknown').toString().trim(),
                     Status: (row['Status'] || 'Open').toString().trim(),
                     AssignedTo: cleanName(row['Assigned To']),
@@ -144,11 +185,10 @@
         }
 
         function sanitizeSystem(val) {
-            if (!val) return "Invalid";
+            if (!val) return "Other";
             let clean = val.toString().replace(/[\[\]"]/g, '').trim();
-            if (clean === "" || !isNaN(clean)) return "Invalid";
             const stop = ["UNKNOWN", "OTHER", "N/A", "NONE", "NULL", "8888"];
-            if (stop.includes(clean.toUpperCase())) return "Invalid";
+            if (clean === "" || !isNaN(clean) || stop.includes(clean.toUpperCase())) return "Invalid";
             return clean;
         }
 
@@ -162,34 +202,32 @@
             return n;
         }
 
-        function renderDashboard(master, curLen, arcLen) {
+        function renderDashboard(data, curLen, arcLen) {
             document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('totalCount').innerText = master.length.toLocaleString();
+            document.getElementById('totalCount').innerText = data.length.toLocaleString();
             document.getElementById('currentCount').innerText = curLen.toLocaleString();
             document.getElementById('archiveCount').innerText = arcLen.toLocaleString();
 
-            // 1. Service Ranking (No PRTG)
-            const serviceFaults = master.filter(d => !d.isPRTG && d.SystemType !== "Invalid");
+            // 1. Systems Ranking
+            const serviceFaults = data.filter(d => !d.isPRTG && d.SystemType !== "Invalid");
             const serviceFreq = countOcc(serviceFaults, 'SystemType');
             const top10Service = Object.entries(serviceFreq).slice(0, 10);
             document.getElementById('topSystem').innerText = top10Service[0] ? top10Service[0][0] : 'N/A';
-            updateChart('topSystemsChart', 'bar', top10Service.map(s => s[0]), [{ label: 'Service Jobs', data: top10Service.map(s => s[1]), backgroundColor: '#8b5cf6', borderRadius: 4 }], false);
+            updateChart('topSystemsChart', 'bar', top10Service.map(s => s[0]), [{ label: 'Faults', data: top10Service.map(s => s[1]), backgroundColor: '#8b5cf6', borderRadius: 4 }], false);
 
-            // 2. PRTG Ranking
-            const prtgFaults = master.filter(d => d.isPRTG && d.SystemType !== "Invalid");
+            const prtgFaults = data.filter(d => d.isPRTG && d.SystemType !== "Invalid");
             const prtgFreq = countOcc(prtgFaults, 'SystemType');
             const top10PRTG = Object.entries(prtgFreq).slice(0, 10);
             updateChart('prtgBreakdownChart', 'bar', top10PRTG.map(s => s[0]), [{ label: 'Infra Alerts', data: top10PRTG.map(s => s[1]), backgroundColor: '#ec4899', borderRadius: 4 }], false);
 
-            // 3. Peak Year
+            // 2. Year Stats
             const yearCounts = {};
-            master.forEach(d => { if(d.Year !== "Unknown") yearCounts[d.Year] = (yearCounts[d.Year] || 0) + 1; });
+            data.forEach(d => { if(d.Year !== "Unknown") yearCounts[d.Year] = (yearCounts[d.Year] || 0) + 1; });
             const sortedYears = Object.entries(yearCounts).sort((a,b) => b[1] - a[1]);
             document.getElementById('peakYear').innerText = sortedYears[0] ? sortedYears[0][0] : '-';
 
-            // 4. YoY Quarterly Comparison
             const yearMap = {};
-            master.forEach(d => { if(d.Year !== "Unknown") { if(!yearMap[d.Year]) yearMap[d.Year]={Q1:0,Q2:0,Q3:0,Q4:0}; yearMap[d.Year][d.Quarter]++; } });
+            data.forEach(d => { if(d.Year !== "Unknown") { if(!yearMap[d.Year]) yearMap[d.Year]={Q1:0,Q2:0,Q3:0,Q4:0}; yearMap[d.Year][d.Quarter]++; } });
             const finalYears = Object.keys(yearMap).sort();
             const colors = ['#2563eb','#10b981','#f59e0b','#8b5cf6','#ef4444'];
             const datasets = finalYears.map((yr, i) => ({
@@ -199,18 +237,18 @@
             }));
             updateChart('quarterlyChart', 'line', ["Q1","Q2","Q3","Q4"], datasets);
 
-            // 5. Priority Distribution (Side-by-Side)
-            const priLabels = [...new Set(master.map(d => d.Priority))].sort();
-            updateChart('priorityChart', 'bar', priLabels, null, false, master);
+            // 3. Priorities
+            const priLabels = [...new Set(data.map(d => d.Priority))].sort();
+            updateChart('priorityChart', 'bar', priLabels, null, false, data);
 
-            // 6. Engineer Leaderboard
-            const completed = master.filter(d => d.Source === 'Current' && d.Status.toLowerCase().startsWith('complete'));
+            // 4. Engineers (Active Only)
+            const completed = data.filter(d => d.Source === 'Current' && d.Status.toLowerCase().startsWith('complete'));
             const engFreq = countOcc(completed, 'AssignedTo');
             const sortedEng = Object.entries(engFreq).slice(0, 10);
             document.getElementById('topEngineer').innerText = sortedEng[0] ? sortedEng[0][0] : 'N/A';
             updateChart('engineerChart', 'bar', sortedEng.map(e => e[0]), [{ label: 'Jobs Done', data: sortedEng.map(e => e[1]), backgroundColor: '#10b981', borderRadius: 4 }], true);
 
-            analyzeKeywords(master);
+            analyzeKeywords(data);
         }
 
         function countOcc(arr, key) {
@@ -219,14 +257,14 @@
             return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1]));
         }
 
-        function updateChart(id, type, labels, datasets, isH, master) {
+        function updateChart(id, type, labels, datasets, isH, data) {
             if (charts[id]) charts[id].destroy();
             let finalDatasets = datasets;
             
             if (id === 'priorityChart') {
                 finalDatasets = [
-                    { label: 'Active', data: labels.map(l => master.filter(d=>d.Priority===l && d.Source==='Current').length), backgroundColor: '#2563eb', borderRadius: 4 },
-                    { label: 'Archive', data: labels.map(l => master.filter(d=>d.Priority===l && d.Source==='Archive').length), backgroundColor: '#fb923c', borderRadius: 4 }
+                    { label: 'Active', data: labels.map(l => data.filter(d=>d.Priority===l && d.Source==='Current').length), backgroundColor: '#2563eb', borderRadius: 4 },
+                    { label: 'Archive', data: labels.map(l => data.filter(d=>d.Priority===l && d.Source==='Archive').length), backgroundColor: '#fb923c', borderRadius: 4 }
                 ];
             }
 
@@ -253,7 +291,7 @@
             const stop = ['please','thank','would','could','there','evening','hello','regarding','tickets','system','issue','prtg'];
             const freq = {};
             words.forEach(w => { if(!stop.includes(w)) freq[w] = (freq[w] || 0) + 1; });
-            const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 20);
+            const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, 15);
             document.getElementById('keywordCloud').innerHTML = sorted.map(([w, c]) => 
                 `<span class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-[10px] font-black uppercase text-blue-100 shadow-md">
                     ${w} <span class="text-blue-400 ml-1">${c}</span>
