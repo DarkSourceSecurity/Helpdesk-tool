@@ -13,33 +13,33 @@
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight uppercase">Helpdesk Engine</h1>
-                <p id="systemStatus" class="text-blue-600 font-bold uppercase text-[10px] tracking-widest">System Ready | Awaiting Files</p>
+                <p id="systemStatus" class="text-blue-600 font-bold uppercase text-[10px] tracking-widest">Awaiting Data Upload</p>
             </div>
             
             <div id="filterArea" class="hidden flex items-center bg-white p-3 rounded-2xl shadow-sm border border-slate-200">
-                <label class="text-[10px] font-black text-slate-400 uppercase mr-3">Filter Region:</label>
-                <select id="regionSelector" onchange="applyFilters()" class="bg-slate-50 border-none text-sm font-bold text-blue-600 rounded-lg focus:ring-0 cursor-pointer"></select>
+                <label class="text-[10px] font-black text-slate-400 uppercase mr-3">Master Region Filter:</label>
+                <select id="regionSelector" onchange="applyFilters()" class="bg-slate-50 border-none text-sm font-bold text-blue-600 rounded-lg focus:ring-0 cursor-pointer min-w-[150px]"></select>
             </div>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
-                <label class="block text-[10px] font-black text-slate-400 uppercase mb-3">Live Helpdesk (Target 6k+)</label>
-                <input type="file" id="currentFile" class="text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-600 file:text-white font-bold cursor-pointer"/>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <label class="block text-[10px] font-black text-slate-400 uppercase mb-3 text-center">Live Helpdesk (Current)</label>
+                <input type="file" id="currentFile" class="text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-600 file:text-white font-bold cursor-pointer w-full"/>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
-                <label class="block text-[10px] font-black text-slate-400 uppercase mb-3">Archive Data (Target 30k+)</label>
-                <input type="file" id="archiveFile" class="text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-orange-500 file:text-white font-bold cursor-pointer"/>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <label class="block text-[10px] font-black text-slate-400 uppercase mb-3 text-center">Archive Helpdesk (Historical)</label>
+                <input type="file" id="archiveFile" class="text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-orange-500 file:text-white font-bold cursor-pointer w-full"/>
             </div>
         </div>
 
         <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-slate-800 transition-all mb-12 border-b-4 border-slate-700 active:translate-y-1">
-            Analyze Databases
+            Analyze by Region
         </button>
 
         <div id="dashboard" class="hidden space-y-8 pb-20">
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-200 text-center"><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Total</p><p id="totalCount" class="text-2xl font-black">0</p></div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-slate-200 text-center"><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Regional Total</p><p id="totalCount" class="text-2xl font-black">0</p></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-bold text-blue-400 uppercase mb-1">Active</p><p id="currentCount" class="text-2xl font-black">0</p></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-bold text-orange-400 uppercase mb-1">Archive</p><p id="archiveCount" class="text-2xl font-black">0</p></div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-purple-500 text-center"><p class="text-[10px] font-bold text-purple-400 uppercase mb-1">Top System</p><p id="topSystem" class="text-sm font-black truncate">-</p></div>
@@ -48,18 +48,18 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Standard Service Faults</h3><div class="h-80"><canvas id="chartSrv"></canvas></div></div>
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">PRTG Infrastructure Alerts</h3><div class="h-80"><canvas id="chartPrtg"></canvas></div></div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-blue-200">Standard Service Faults</h3><div class="h-80"><canvas id="chartSrv"></canvas></div></div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-pink-200">PRTG Infrastructure Alerts</h3><div class="h-80"><canvas id="chartPrtg"></canvas></div></div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Combined Year-on-Year Growth</h3><div class="h-80"><canvas id="chartYoY"></canvas></div></div>
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Combined Priority Distribution</h3><div class="h-80"><canvas id="chartPri"></canvas></div></div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-indigo-200">Year-on-Year Regional Trends</h3><div class="h-80"><canvas id="chartYoY"></canvas></div></div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-orange-200">Priority Distribution</h3><div class="h-80"><canvas id="chartPri"></canvas></div></div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Engineer Performance (Active Only)</h3><div class="h-80"><canvas id="chartEng"></canvas></div></div>
-                <div class="bg-slate-900 p-8 rounded-3xl shadow-xl text-white flex flex-col"><h3 class="text-xs font-bold uppercase mb-6 text-slate-500 text-center">Keywords</h3><div id="keywordCloud" class="flex flex-wrap justify-center gap-2"></div></div>
+                <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-emerald-200">Engineer Leaderboard (Active DB)</h3><div class="h-80"><canvas id="chartEng"></canvas></div></div>
+                <div class="bg-slate-900 p-8 rounded-3xl shadow-xl text-white flex flex-col items-center justify-center"><h3 class="text-xs font-bold uppercase mb-6 text-slate-500">Tech Keywords</h3><div id="keywordCloud" class="flex flex-wrap justify-center gap-2"></div></div>
             </div>
         </div>
     </div>
@@ -74,31 +74,34 @@
                 const arcF = document.getElementById('archiveFile').files[0];
                 if (!curF || !arcF) return alert("Select both files.");
 
-                updateStatus("Parsing Files...");
+                setStatus("Parsing Data...");
                 const curRaw = await parseCSV(curF);
                 const arcRaw = await parseCSV(arcF);
 
-                updateStatus("Cleaning & Mapping...");
+                setStatus("Applying Regional Mapping...");
                 const cleanCur = ingest(curRaw, 'Active');
                 const cleanArc = ingest(arcRaw, 'Archive');
 
                 masterData = [...cleanCur, ...cleanArc];
                 
-                updateStatus("Building Regions...");
-                const regs = [...new Set(masterData.map(d => d.Region))].sort();
+                // Populate Region Dropdown
+                const regs = [...new Set(masterData.map(d => d.Region))].filter(Boolean).sort();
                 const sel = document.getElementById('regionSelector');
-                sel.innerHTML = '<option value="ALL">All Regions (Combined)</option>';
-                regs.forEach(r => { if(r && r !== "Unknown") { let o = document.createElement('option'); o.value = r; o.innerText = r; sel.appendChild(o); } });
+                sel.innerHTML = '<option value="ALL">All Regions (Global)</option>';
+                regs.forEach(r => {
+                    const o = document.createElement('option');
+                    o.value = r; o.innerText = r; sel.appendChild(o);
+                });
 
                 document.getElementById('filterArea').classList.remove('hidden');
                 document.getElementById('dashboard').classList.remove('hidden');
                 
                 applyFilters();
-                updateStatus("Analysis Complete");
+                setStatus("Region View Ready");
             } catch (err) {
                 console.error(err);
-                updateStatus("Error: See Console (F12)");
-                alert("Critical Error: " + err.message);
+                setStatus("Error: Column Missing");
+                alert("Please ensure your CSV has a 'Region' column.");
             }
         }
 
@@ -108,42 +111,46 @@
             });
         }
 
-        function updateStatus(msg) {
-            const el = document.getElementById('systemStatus');
-            if (el) el.innerText = msg;
+        function setStatus(msg) {
+            document.getElementById('systemStatus').innerText = msg;
         }
 
         function ingest(data, source) {
             if (!data.length) return [];
-            const headers = Object.keys(data[0]);
-            const find = (keys) => headers.find(h => keys.some(k => h.toLowerCase().replace(/[^a-z]/g, '').includes(k)));
+            const h = Object.keys(data[0]);
+            
+            // STRICT MAPPING
+            const find = (keys) => h.find(k => keys.some(key => k.toLowerCase().replace(/[^a-z]/g, '').includes(key)));
             
             const cols = {
                 id: find(['ticket', 'id', 'number']),
                 sys: find(['system', 'type', 'category']),
                 date: find(['date', 'created']),
-                reg: find(['region', 'site', 'area', 'location']),
-                pri: find(['priority', 'rating', 'level']),
-                eng: find(['assigned', 'owner', 'engineer', 'technician']),
+                reg: find(['region', 'site', 'area']), // Region takes priority
+                pri: find(['priority', 'rating']),
+                eng: find(['assigned', 'owner', 'engineer']),
                 stat: find(['status', 'state']),
-                desc: find(['description', 'fault', 'subject'])
+                desc: find(['description', 'fault'])
             };
 
             return data.filter(r => r[cols.id]).map(r => {
-                const sys = (r[cols.sys] || "Unknown").toString().trim();
+                const sysRaw = (r[cols.sys] || "Unknown").toString();
                 let yr = "Unknown", q = "Q1";
                 const pts = (r[cols.date] || "").toString().split('/');
                 if (pts.length >= 3) {
                     const y = pts[2].split(' ')[0], m = parseInt(pts[1]) - 1, d = parseInt(pts[0]);
                     const dObj = new Date(y, m, d);
-                    if (!isNaN(dObj.getTime())) { yr = dObj.getFullYear().toString(); q = "Q" + (Math.floor(dObj.getMonth() / 3) + 1); }
+                    if (!isNaN(dObj.getTime())) { 
+                        yr = dObj.getFullYear().toString(); 
+                        q = "Q" + (Math.floor(dObj.getMonth() / 3) + 1); 
+                    }
                 }
 
                 return {
                     ID: r[cols.id], Source: source,
-                    Region: (r[cols.reg] || "Unassigned").toString().trim(),
-                    System: sys.replace(/[\[\]"]/g, ''),
-                    isPRTG: sys.toUpperCase().includes("PRTG"),
+                    Region: (r[cols.reg] || "Other").toString().trim(),
+                    System: sysRaw.replace(/[\[\]"]/g, '').trim(),
+                    isPRTG: sysRaw.toUpperCase().includes("PRTG"),
                     Priority: (r[cols.pri] || "P3").toString().trim(),
                     Engineer: r[cols.eng] || "Unassigned",
                     Status: (r[cols.stat] || "Open").toString().toLowerCase(),
@@ -154,30 +161,34 @@
         }
 
         function applyFilters() {
-            const reg = document.getElementById('regionSelector').value;
-            const filtered = (reg === "ALL") ? masterData : masterData.filter(d => d.Region === reg);
+            const selected = document.getElementById('regionSelector').value;
+            const filtered = (selected === "ALL") ? masterData : masterData.filter(d => d.Region === selected);
             render(filtered);
         }
 
         function render(data) {
-            // Counter Updates
+            // Stats
             document.getElementById('totalCount').innerText = data.length.toLocaleString();
             document.getElementById('currentCount').innerText = data.filter(d => d.Source === 'Active').length.toLocaleString();
             document.getElementById('archiveCount').innerText = data.filter(d => d.Source === 'Archive').length.toLocaleString();
 
-            const sysSrv = count(data.filter(d => !d.isPRTG), 'System');
-            document.getElementById('topSystem').innerText = Object.keys(sysSrv)[0] || '-';
-            draw('chartSrv', 'bar', Object.keys(sysSrv).slice(0, 10), [{ label: 'Jobs', data: Object.values(sysSrv).slice(0, 10), backgroundColor: '#8b5cf6', borderRadius: 6 }]);
+            // Service Faults
+            const srv = count(data.filter(d => !d.isPRTG), 'System');
+            document.getElementById('topSystem').innerText = Object.keys(srv)[0] || '-';
+            draw('chartSrv', 'bar', Object.keys(srv).slice(0, 10), [{ label: 'Faults', data: Object.values(srv).slice(0, 10), backgroundColor: '#8b5cf6', borderRadius: 6 }]);
 
-            const sysPrtg = count(data.filter(d => d.isPRTG), 'System');
-            draw('chartPrtg', 'bar', Object.keys(sysPrtg).slice(0, 10), [{ label: 'Alerts', data: Object.values(sysPrtg).slice(0, 10), backgroundColor: '#ec4899', borderRadius: 6 }]);
+            // PRTG Alerts
+            const prtg = count(data.filter(d => d.isPRTG), 'System');
+            draw('chartPrtg', 'bar', Object.keys(prtg).slice(0, 10), [{ label: 'Alerts', data: Object.values(prtg).slice(0, 10), backgroundColor: '#ec4899', borderRadius: 6 }]);
 
+            // Engineer Ranking
             const eng = count(data.filter(d => d.Source === 'Active' && d.Status.includes('complete')), 'Engineer');
             document.getElementById('topEngineer').innerText = Object.keys(eng)[0] || '-';
-            draw('chartEng', 'bar', Object.keys(eng).slice(0, 10), [{ label: 'Closed Jobs', data: Object.values(eng).slice(0, 10), backgroundColor: '#10b981', borderRadius: 6 }], true);
+            draw('chartEng', 'bar', Object.keys(eng).slice(0, 10), [{ label: 'Tickets', data: Object.values(eng).slice(0, 10), backgroundColor: '#10b981', borderRadius: 6 }], true);
 
-            const yrs = count(data, 'Year');
-            document.getElementById('peakYear').innerText = Object.keys(yrs)[0] || '0';
+            // Timeline
+            const peak = count(data, 'Year');
+            document.getElementById('peakYear').innerText = Object.keys(peak)[0] || '0';
 
             const yMap = {};
             data.forEach(d => { if(d.Year !== "Unknown") { if(!yMap[d.Year]) yMap[d.Year]={Q1:0,Q2:0,Q3:0,Q4:0}; yMap[d.Year][d.Quarter]++; } });
@@ -187,15 +198,18 @@
             }));
             draw('chartYoY', 'line', ["Q1","Q2","Q3","Q4"], ds);
 
+            // Priority
             const pL = [...new Set(data.map(d => d.Priority))].sort();
             draw('chartPri', 'bar', pL, [
                 { label: 'Active', data: pL.map(l => data.filter(d=>d.Priority===l && d.Source==='Active').length), backgroundColor: '#2563eb', borderRadius: 4 },
                 { label: 'Archive', data: pL.map(l => data.filter(d=>d.Priority===l && d.Source==='Archive').length), backgroundColor: '#fb923c', borderRadius: 4 }
             ]);
 
-            const words = data.slice(0, 2000).map(d => d.Desc).join(' ').toLowerCase().match(/\b(\w{5,})\b/g) || [];
+            // Keywords
+            const txt = data.slice(0, 2000).map(d => d.Desc).join(' ').toLowerCase();
+            const words = txt.match(/\b(\w{5,})\b/g) || [];
             const freq = {};
-            words.forEach(w => { if(!['please','thank','regarding'].includes(w)) freq[w] = (freq[w] || 0) + 1; });
+            words.forEach(w => { if(!['please','thank','regarding','tickets'].includes(w)) freq[w] = (freq[w] || 0) + 1; });
             const srt = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0, 15);
             document.getElementById('keywordCloud').innerHTML = srt.map(([w, c]) => `<span class="bg-slate-800 px-3 py-1 rounded text-[10px] uppercase text-blue-100">${w} <span class="text-blue-400 ml-1 font-bold">${c}</span></span>`).join('');
         }
@@ -207,8 +221,10 @@
         }
 
         function draw(id, type, labels, datasets, isH) {
+            const ctx = document.getElementById(id);
+            if (!ctx) return;
             if (charts[id]) charts[id].destroy();
-            charts[id] = new Chart(document.getElementById(id), {
+            charts[id] = new Chart(ctx, {
                 type: type,
                 data: { labels, datasets },
                 options: { maintainAspectRatio: false, indexAxis: isH ? 'y' : 'x', plugins: { legend: { display: (type==='line'||id==='chartPri') } } }
