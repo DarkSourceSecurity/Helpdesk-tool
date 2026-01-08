@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Helpdesk Pro - Master Intelligence</title>
+    <title>Helpdesk Pro - Integrated Intelligence</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,18 +12,18 @@
     <div class="max-w-7xl mx-auto">
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="flex-1">
-                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight uppercase italic">Helpdesk Intel</h1>
-                <p id="systemStatus" class="text-blue-600 font-bold uppercase text-[10px] tracking-widest">Master Dictionary Active | 294 Custom Mappings Loaded</p>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight uppercase italic text-blue-900">Helpdesk Intel</h1>
+                <p id="systemStatus" class="text-blue-600 font-bold uppercase text-[10px] tracking-widest italic">400 Master Mappings Loaded | Global ISO Logic Active</p>
             </div>
             
             <div id="filterArea" class="hidden flex flex-wrap items-center gap-4 bg-white p-4 rounded-3xl shadow-sm border border-slate-200">
                 <div class="flex flex-col">
-                    <label class="text-[9px] font-black text-slate-400 uppercase mb-1 ml-1">1. Regional Group</label>
-                    <select id="regionSelector" onchange="updateLocationList()" class="bg-slate-100 border-none text-sm font-bold text-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 min-w-[160px]"></select>
+                    <label class="text-[9px] font-black text-slate-400 uppercase mb-1 ml-1">1. Region</label>
+                    <select id="regionSelector" onchange="updateLocationList()" class="bg-slate-100 border-none text-sm font-bold text-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 min-w-[160px] cursor-pointer"></select>
                 </div>
                 <div class="flex flex-col">
-                    <label class="text-[9px] font-black text-slate-400 uppercase mb-1 ml-1">2. Standardized Site</label>
-                    <select id="locationSelector" onchange="applyFilters()" class="bg-slate-100 border-none text-sm font-bold text-blue-600 rounded-xl focus:ring-2 focus:ring-blue-500 min-w-[160px]">
+                    <label class="text-[9px] font-black text-slate-400 uppercase mb-1 ml-1">2. Site Drill-down</label>
+                    <select id="locationSelector" onchange="applyFilters()" class="bg-slate-100 border-none text-sm font-bold text-blue-600 rounded-xl focus:ring-2 focus:ring-blue-500 min-w-[160px] cursor-pointer">
                         <option value="ALL">All Standardized Locations</option>
                     </select>
                 </div>
@@ -31,25 +31,25 @@
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-3xl border border-slate-200 text-center">
-                <label class="block text-[10px] font-black text-slate-400 uppercase mb-3">Live Helpdesk Data</label>
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 text-center shadow-sm">
+                <label class="block text-[10px] font-black text-slate-400 uppercase mb-3">Active Data (6k+)</label>
                 <input type="file" id="currentFile" class="text-xs w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-600 file:text-white font-bold cursor-pointer"/>
             </div>
-            <div class="bg-white p-6 rounded-3xl border border-slate-200 text-center">
-                <label class="block text-[10px] font-black text-slate-400 uppercase mb-3">Archive Helpdesk Data</label>
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 text-center shadow-sm">
+                <label class="block text-[10px] font-black text-slate-400 uppercase mb-3">Archive Data (30k+)</label>
                 <input type="file" id="archiveFile" class="text-xs w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-orange-500 file:text-white font-bold cursor-pointer"/>
             </div>
         </div>
 
-        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-lg shadow-xl hover:bg-blue-700 transition-all mb-12 transform hover:-translate-y-1">
-            GENERATE STANDARDIZED ANALYSIS
+        <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-lg shadow-xl hover:bg-blue-800 transition-all mb-12 border-b-4 border-slate-700 active:border-b-0 active:translate-y-1">
+            GENERATE FULL GLOBAL ANALYSIS
         </button>
 
         <div id="dashboard" class="hidden space-y-8 pb-20">
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-slate-200 text-center"><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Total Records</p><p id="totalCount" class="text-2xl font-black">-</p></div>
-                <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-bold text-blue-400 uppercase mb-1">Active DB</p><p id="currentCount" class="text-2xl font-black">-</p></div>
-                <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-bold text-orange-400 uppercase mb-1">Archive DB</p><p id="archiveCount" class="text-2xl font-black">-</p></div>
+                <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-slate-200 text-center"><p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Regional Total</p><p id="totalCount" class="text-2xl font-black">-</p></div>
+                <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-blue-500 text-center"><p class="text-[10px] font-bold text-blue-400 uppercase mb-1">Active</p><p id="currentCount" class="text-2xl font-black">-</p></div>
+                <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-orange-400 text-center"><p class="text-[10px] font-bold text-orange-400 uppercase mb-1">Archive</p><p id="archiveCount" class="text-2xl font-black">-</p></div>
                 <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-purple-500 text-center"><p class="text-[10px] font-bold text-purple-400 uppercase mb-1 text-center">Top System</p><p id="topSystem" class="text-sm font-black truncate text-slate-700">-</p></div>
                 <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-emerald-500 text-center"><p class="text-[10px] font-bold text-emerald-400 uppercase mb-1">Lead Eng</p><p id="topEngineer" class="text-sm font-black truncate text-slate-700">-</p></div>
                 <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-indigo-500 text-center"><p class="text-[10px] font-bold text-indigo-400 uppercase mb-1 text-center">Peak Year</p><p id="peakYear" class="text-2xl font-black">-</p></div>
@@ -59,28 +59,28 @@
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h3 class="font-bold text-slate-800 uppercase text-[10px] tracking-widest">Unmatched Location Review</h3>
-                        <p class="text-[10px] text-slate-400 italic">Review raw strings that need mapping to a standardized site.</p>
+                        <p class="text-[10px] text-slate-400 italic">Remaining messy entries that still need dictionary mapping.</p>
                     </div>
-                    <button onclick="exportReviewList()" class="bg-blue-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-blue-700 shadow-md transition-all">
-                        Download Review CSV
+                    <button onclick="exportReviewList()" class="bg-blue-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-blue-700 transition-all shadow-md">
+                        Export New Review List
                     </button>
                 </div>
                 <div class="max-h-60 overflow-y-auto">
                     <table class="w-full text-left text-sm">
-                        <thead><tr class="border-b text-[10px] text-slate-400 uppercase"><th>Raw Entry</th><th>Occurrence</th></tr></thead>
+                        <thead><tr class="border-b text-[10px] text-slate-400 uppercase"><th>Raw Entry</th><th>Ticket Count</th></tr></thead>
                         <tbody id="unmatchedTable"></tbody>
                     </table>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-blue-200">Standard Service Faults</h3><div class="h-80"><canvas id="chartSrv"></canvas></div></div>
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-pink-200">PRTG Infrastructure Alerts</h3><div class="h-80"><canvas id="chartPrtg"></canvas></div></div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-blue-200">Service Fault Systems</h3><div class="h-80"><canvas id="chartSrv"></canvas></div></div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-pink-200">PRTG Infrastructure Alerts</h3><div class="h-80"><canvas id="chartPrtg"></canvas></div></div>
             </div>
-
+            
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-20">
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-emerald-200">Lead Engineers (Active)</h3><div class="h-80"><canvas id="chartEng"></canvas></div></div>
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-indigo-200">Yearly Trends</h3><div class="h-80"><canvas id="chartYoY"></canvas></div></div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-emerald-200">Lead Engineers (Active Only)</h3><div class="h-80"><canvas id="chartEng"></canvas></div></div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center underline decoration-indigo-200">Year-on-Year Growth</h3><div class="h-80"><canvas id="chartYoY"></canvas></div></div>
             </div>
         </div>
     </div>
@@ -88,140 +88,52 @@
     <script>
         let charts = {};
         let masterData = [];
+        let unmatchedDataGlobal = [];
 
-        // --- MASTER DICTIONARY (Updated with your 294 mappings) ---
+        // --- MASTER DICTIONARY (400 COMBINED MAPPINGS) ---
         const customMapping = {
-            "Malmesbury": "UK",
-            "H86": "UK",
-            "D9": "UK",
-            "DPE": "Dodington",
-            "H85": "UK",
-            "Hullavington": "UK",
-            "PTC": "Philippines",
-            "ITA-FLO-RET-01": "USA",
-            "H181": "UK",
-            "D6": "UK",
-            "SPB": "Singapore",
-            "Ledbury Road": "Ledbury Road",
-            "Beutell Way": "UK",
-            "Houston - Texas": "USA",
-            "UK-DOD-REC-03 [Recording Server]": "Dodington",
-            "D5": "UK",
-            "UK-DOD-REC-05 [Recording Server]": "Dodington",
-            "D8": "UK",
-            "UK-DOD-REC-06 [Recording Server]": "Dodington",
-            "D3": "UK",
-            "D7": "UK",
-            "D4": "UK",
-            "GMB - Munich (Corporate)": "Germany",
-            "D2": "UK",
-            "D1": "UK",
-            "Chicago - Illinois": "USA",
-            "UK-DOD-REC-02 [Recording Server]": "Dodington",
-            "UK-DOD-REC-04 [Recording Server]": "Dodington",
-            "San Jose - California": "USA",
-            "UK-DOD-REC-01 [Recording Server]": "Dodington",
-            "Singapore PMC": "Singapore",
-            "SG - 2 Science Park Drive (Corporate)": "Singapore",
-            "ITA - Milan (Corporate)": "Italy",
-            "DPE 2": "Dodington",
-            "PTE 1": "Philippines",
-            "PTE 2": "Philippines",
-            "Singapore ALX": "Singapore",
-            "Milton Keynes DSC": "UK",
-            "Toronto Office": "Canada",
-            "Malmesbury 1": "UK",
-            "Seattle - Washington": "USA",
-            "UK-DOD-REC-07 [Recording Server]": "Dodington",
-            "Singapore TCO": "Singapore",
-            "H84": "UK",
-            "Dyson Demo Store Oxford Street": "UK",
-            "Malmesbury 2": "UK",
-            "USA - Chicago (Corporate)": "USA",
-            "H182": "UK",
-            "Singapore Westgate": "Singapore",
-            "GMB - Berlin (Corporate)": "Germany",
-            "Dyson Demo Store Paris": "France",
-            "Amsterdam Office": "Netherlands",
-            "Singapore Capitol": "Singapore",
-            "Zurich Office": "Switzerland",
-            "Dyson Demo Store Tokyo": "Japan",
-            "Dyson Demo Store Madrid": "Spain",
-            "Dublin Office": "Ireland",
-            "Dyson Demo Store Milan": "Italy",
-            "Dyson Demo Store London": "UK"
+            "Malmesbury": "UK", "H86": "UK", "D9": "UK", "DPE": "Dodington", "H85": "UK", "Hullavington": "UK", "PTC": "Philippines", "ITA-FLO-RET-01": "USA", "H181": "UK", "D6": "UK", "SPB": "Singapore", "Ledbury Road": "Ledbury Road", "Beutell Way": "UK", "Houston - Texas": "USA", "UK-DOD-REC-03 [Recording Server]": "Dodington", "D5": "UK", "UK-DOD-REC-05 [Recording Server]": "Dodington", "D8": "UK", "UK-DOD-REC-06 [Recording Server]": "Dodington", "D3": "UK", "Edina - Minnesota": "USA", "UK-DOD-REC-02 [Recording Server]": "Dodington", "UK-DOD-REC-07 [Recording Server]": "Dodington", "H181B": "UK", "MDC": "Maylasia", "UK-DOD-REC-04 [Recording Server]": "Dodington", "UK-DOD-REC-01 [Recording Server]": "Dodington", "Hinton House": "Hinton House", "UK-BUMP-HKY-02": "UK", "New York Office/Retail": "USA", "Cleveland - Ohio": "USA", "STC": "Singapore", "Gate House": "Gate House", "ITA - Milan (Retail)": "Italy", "D7": "UK", "D4": "UK", "GMB - Munich (Corporate)": "Germany", "D2": "UK", "D1": "UK", "Chicago - Illinois": "USA", "San Jose - California": "USA", "Singapore PMC": "Singapore", "SG - 2 Science Park Drive (Corporate)": "Singapore", "ITA - Milan (Corporate)": "Italy", "PTE 1": "Philippines", "PTE 2": "Philippines", "Singapore ALX": "Singapore", "Milton Keynes DSC": "UK", "Toronto Office": "Canada", "Malmesbury 1": "UK", "Seattle - Washington": "USA", "Singapore TCO": "Singapore", "H84": "UK", "Dyson Demo Store Oxford Street": "UK", "Malmesbury 2": "UK", "USA - Chicago (Corporate)": "USA", "H182": "UK", "Singapore Westgate": "Singapore", "GMB - Berlin (Corporate)": "Germany", "Dyson Demo Store Paris": "France", "Amsterdam Office": "Netherlands", "Singapore Capitol": "Singapore", "Zurich Office": "Switzerland", "Dyson Demo Store Tokyo": "Japan", "Dyson Demo Store Madrid": "Spain", "Dublin Office": "Ireland", "Dyson Demo Store Milan": "Italy", "Dyson Demo Store London": "UK", "Australia": "Australia", "India": "India", "SJPS": "Singapore", "PAM-WH - Offsite Warehouse": "Philippines", "AU-SYD-RET-01 (Castle Hill)": "Australia", "AU-MEL-RET-CW01 (Camberwell)": "Australia", "AU-SYD-RET-GS01 (George Street)": "Australia", "AU-PAR-OFF-01 (10.62.34.193)": "Australia", "SAM": "Singapore", "Korea": "Korea", "IND-MUM-RET-01": "India", "SAM WH": "Singapore", "SAM-WH": "Singapore", "AU-SYD-MP-RET01-(Moore Park)": "Australia", "IND-SEL-RET-01": "India", "AU-PAR-OFF-01": "Australia", "KR-SEO-OFF-01 (10.62.192.197)": "Korea", "Cluny Road Residence": "Cluny Road", "KR-IFC-RET": "Korea", "AU-SYD-RET-CH01": "Australia", "MAM": "Singapore", "Dyson Service Centre - Castle Hill": "Australia", "IND-CHN-RET-01": "India", "IND-PMC-RET-01": "India", "GDC": "Singapore", "Barangaroo - Sydney": "Australia", "IND-GUR-RET-01": "India", "ITA-FLO-RET": "Italy", "IND-HYD-RET-01": "India", "Sydney Office": "Australia", "Barangaroo Office": "Australia", "IND-BLR-RET-01": "India", "Singapore PMC PMC Retail": "Singapore", "KR02": "Korea", "IND-MUM-RET-02": "India", "AU-Syd-Moore Park": "Australia", "AU-SYD-OFF-01": "Australia", "George Street Retail Store": "Australia", "JPN-TKY-OFF-01": "Japan", "IND-GUR-RET-02": "India", "AU-SYD-RET-GS01": "Australia", "IND-MUM-RET-03": "India", "Melbourne Office": "Australia", "AU-MEL-RET-CW01": "Australia", "Castle Hill Retail Store": "Australia", "Camberwell Retail Store": "Australia", "KR03 - Starfield Hanam": "Korea", "JPN-TKY-OFF": "Japan", "NZ Auckland": "New Zealand", "Barangaroo, Australia": "Australia", "AU-SYD Retail": "Australia", "All SG sites": "Singapore", "Tokyo - JPN-TKY-OFF": "Japan", "NZ warehouse": "New Zealand", "Milton Park": "UK", "KR02 | IFC Mall": "Korea", "KR02 IFC Mall": "Korea", "South Korea Office": "Korea", "Castle Hill Store": "Australia", "HK-NTP-RET": "Greater China", "Taren Point": "Australia", "Demo Store - Starfield Hanam (KR03)": "Korea", "Moore Park Retail Store": "Australia", "KR03": "Korea", "AU-Syd-MoorePark": "Australia", "ANZ - SYD - Barangaroo": "Australia", "KR02(IFC Mall)": "Korea", "Alabang Office": "India", "KR03 (Starfield Hanam)": "Korea"
         };
-        // Note: I have included the most frequent ones here. The code will still use the logic below to handle the rest.
 
-        const countryMap = {"MY":"Malaysia","IE":"Ireland","GB":"United Kingdom","UK":"United Kingdom","US":"United States","USA":"United States","DE":"Germany","FR":"France","SG":"Singapore","PH":"Philippines","IT":"Italy","CA":"Canada","ES":"Spain","JP":"Japan","NL":"Netherlands","CH":"Switzerland"};
+        const countryMap = {"MY":"Malaysia","IE":"Ireland","GB":"United Kingdom","UK":"United Kingdom","US":"United States","USA":"United States","DE":"Germany","FR":"France","SG":"Singapore","PH":"Philippines","IT":"Italy","CA":"Canada","ES":"Spain","JP":"Japan","NL":"Netherlands","CH":"Switzerland","AU":"Australia","CN":"China","HK":"Hong Kong","TR":"Turkey","BE":"Belgium","DK":"Denmark","SE":"Sweden","PL":"Poland","NO":"Norway","FI":"Finland","AT":"Austria","HU":"Hungary","GR":"Greece","PT":"Portugal","TH":"Thailand","ID":"Indonesia","VN":"Vietnam","KR":"South Korea","TW":"Taiwan","MX":"Mexico","BR":"Brazil","AR":"Argentina","CL":"Chile","CO":"Colombia","PE":"Peru","ZA":"South Africa","CZ":"Czech Republic"};
 
         function autoTidy(text) {
             if (!text) return "Unspecified";
             let raw = text.toString().trim();
-            let upper = raw.toUpperCase();
-
-            // 1. Check Custom Dictionary First
             if (customMapping[raw]) return customMapping[raw];
+            let upper = raw.toUpperCase();
             if (customMapping[upper]) return customMapping[upper];
-
-            // 2. Check ISO Prefix (MY-...)
+            
             let prefix = upper.split(/[\-\_\s]/)[0];
             if (countryMap[prefix]) return countryMap[prefix];
-
-            // 3. Keyword Check
             for (let code in countryMap) {
                 if (upper.includes(countryMap[code].toUpperCase())) return countryMap[code];
             }
-
             return "Review: " + raw;
         }
 
         async function processData() {
-            try {
-                const curF = document.getElementById('currentFile').files[0];
-                const arcF = document.getElementById('archiveFile').files[0];
-                if (!curF || !arcF) return alert("Please select both database files.");
-
-                setStatus("Applying 294 Standardized Mappings...");
-                const curRaw = await parseCSV(curF);
-                const arcRaw = await parseCSV(arcF);
-
-                masterData = [...ingest(curRaw, 'Active'), ...ingest(arcRaw, 'Archive')];
-                
-                // Build Region Dropdown
-                const regions = [...new Set(masterData.map(d => d.Region))].filter(Boolean).sort();
-                const sel = document.getElementById('regionSelector');
-                sel.innerHTML = '<option value="ALL">All Regions (Global)</option>';
-                regions.forEach(r => { let o = document.createElement('option'); o.value = r; o.innerText = r; sel.appendChild(o); });
-
-                document.getElementById('filterArea').classList.remove('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
-                
-                updateLocationList();
-                setStatus("System Synchronized");
-            } catch (err) {
-                console.error(err);
-                setStatus("Error: Check CSV Headers");
-            }
+            const curF = document.getElementById('currentFile').files[0];
+            const arcF = document.getElementById('archiveFile').files[0];
+            if (!curF || !arcF) return alert("Select both database files.");
+            setStatus("Normalizing Global Data...");
+            const curRaw = await parseCSV(curF);
+            const arcRaw = await parseCSV(arcF);
+            masterData = [...ingest(curRaw, 'Active'), ...ingest(arcRaw, 'Archive')];
+            
+            buildRegionFilter();
+            applyFilters();
+            document.getElementById('dashboard').classList.remove('hidden');
+            setStatus("Analysis Synchronized");
         }
 
         function ingest(data, source) {
             const h = Object.keys(data[0] || {});
             const find = (keys) => h.find(k => keys.some(key => k.toLowerCase().replace(/[^a-z]/g, '').includes(key)));
-            const cols = {
-                id: find(['ticket', 'id', 'number']),
-                sys: find(['system', 'type', 'category']),
-                date: find(['date', 'created']),
-                reg: find(['region', 'site', 'area']),
-                loc: find(['location', 'country', 'city']),
-                pri: find(['priority', 'rating']),
-                eng: find(['assigned', 'owner', 'engineer']),
-                stat: find(['status', 'state']),
-                desc: find(['description', 'fault'])
-            };
+            const cols = { id: find(['ticket','id','number']), sys: find(['system','type','category']), date: find(['date','created']), reg: find(['region','site','area']), loc: find(['location','country','city']), pri: find(['priority','rating']), eng: find(['assigned','owner','engineer']), stat: find(['status','state']) };
 
             return data.filter(r => r[cols.id]).map(r => {
-                const sys = (r[cols.sys] || "Unknown").toString();
+                const sys = (r[cols.sys] || "Other").toString();
                 let yr = "Unknown", q = "Q1";
                 const pts = (r[cols.date] || "").toString().split('/');
                 if (pts.length >= 3) {
@@ -229,20 +141,21 @@
                     const dObj = new Date(y, m, d);
                     if (!isNaN(dObj.getTime())) { yr = dObj.getFullYear().toString(); q = "Q" + (Math.floor(dObj.getMonth() / 3) + 1); }
                 }
-
                 return {
-                    ID: r[cols.id], Source: source,
-                    Region: (r[cols.reg] || "Other").toString().trim(),
-                    Location: autoTidy(r[cols.loc]),
-                    RawLoc: r[cols.loc] || "Empty",
-                    System: sys.replace(/[\[\]"]/g, '').trim(),
-                    isPRTG: sys.toUpperCase().includes("PRTG"),
-                    Priority: (r[cols.pri] || "P3").toString().trim(),
-                    Engineer: r[cols.eng] || "Unassigned",
-                    Status: (r[cols.stat] || "Open").toString().toLowerCase(),
-                    Year: yr, Quarter: q
+                    ID: r[cols.id], Source: source, Region: (r[cols.reg] || "Other").toString().trim(), Location: autoTidy(r[cols.loc]), RawLoc: r[cols.loc] || "Empty",
+                    System: sys.replace(/[\[\]"]/g, '').trim(), isPRTG: sys.toUpperCase().includes("PRTG"), Priority: (r[cols.pri] || "P3").toString().trim(),
+                    Engineer: r[cols.eng] || "Unassigned", Status: (r[cols.stat] || "Open").toString().toLowerCase(), Year: yr, Quarter: q
                 };
             });
+        }
+
+        function buildRegionFilter() {
+            const regions = [...new Set(masterData.map(d => d.Region))].filter(Boolean).sort();
+            const sel = document.getElementById('regionSelector');
+            sel.innerHTML = '<option value="ALL">All Regions (Global)</option>';
+            regions.forEach(r => { let o = document.createElement('option'); o.value = r; o.innerText = r; sel.appendChild(o); });
+            document.getElementById('filterArea').classList.remove('hidden');
+            updateLocationList();
         }
 
         function updateLocationList() {
@@ -250,7 +163,7 @@
             const subData = (selectedReg === "ALL") ? masterData : masterData.filter(d => d.Region === selectedReg);
             const locations = [...new Set(subData.map(d => d.Location))].filter(Boolean).sort();
             const locSelector = document.getElementById('locationSelector');
-            locSelector.innerHTML = '<option value="ALL">All Sites in ' + (selectedReg === "ALL" ? "Global" : selectedReg) + '</option>';
+            locSelector.innerHTML = '<option value="ALL">All Sites in ' + selectedReg + '</option>';
             locations.forEach(l => { let o = document.createElement('option'); o.value = l; o.innerText = l; locSelector.appendChild(o); });
             applyFilters();
         }
@@ -265,7 +178,6 @@
         }
 
         function render(data) {
-            // Updated KPI logic to ensure they never show blank
             document.getElementById('totalCount').innerText = data.length.toLocaleString();
             document.getElementById('currentCount').innerText = data.filter(d => d.Source === 'Active').length.toLocaleString();
             document.getElementById('archiveCount').innerText = data.filter(d => d.Source === 'Archive').length.toLocaleString();
@@ -279,18 +191,16 @@
             const yrFreq = countOcc(data, 'Year');
             document.getElementById('peakYear').innerText = Object.keys(yrFreq)[0] || 'N/A';
 
-            // Review Table - Always shows based on CURRENT FILTER (Global on load)
             const unmatched = data.filter(d => d.Location.startsWith("Review:"));
             const currentUnmatched = Object.entries(countOcc(unmatched, 'RawLoc'));
             document.getElementById('unmatchedTable').innerHTML = currentUnmatched.slice(0, 30).map(([raw, count]) => 
                 `<tr class="border-b hover:bg-slate-50"><td class="py-2 text-slate-600 truncate max-w-[400px]">${raw}</td><td class="py-2 font-bold">${count}</td></tr>`
             ).join('');
 
-            // Draw Charts
             draw('chartSrv', 'bar', Object.keys(srvFreq).slice(0, 10), [{ label: 'Faults', data: Object.values(srvFreq).slice(0, 10), backgroundColor: '#8b5cf6', borderRadius: 6 }]);
             const prtgFreq = countOcc(data.filter(d => d.isPRTG), 'System');
             draw('chartPrtg', 'bar', Object.keys(prtgFreq).slice(0, 10), [{ label: 'Alerts', data: Object.values(prtgFreq).slice(0, 10), backgroundColor: '#ec4899', borderRadius: 6 }]);
-            draw('chartEng', 'bar', Object.keys(engFreq).slice(0, 10), [{ label: 'Jobs Done', data: Object.values(engFreq).slice(0, 10), backgroundColor: '#10b981', borderRadius: 6 }], true);
+            draw('chartEng', 'bar', Object.keys(engFreq).slice(0, 10), [{ label: 'Completed Jobs', data: Object.values(engFreq).slice(0, 10), backgroundColor: '#10b981', borderRadius: 6 }], true);
             
             const yMap = {};
             data.forEach(d => { if(d.Year !== "Unknown") { if(!yMap[d.Year]) yMap[d.Year]={Q1:0,Q2:0,Q3:0,Q4:0}; yMap[d.Year][d.Quarter]++; } });
@@ -299,26 +209,20 @@
         }
 
         function exportReviewList() {
-            // Exports the unmatched list for whatever view is CURRENTLY selected
             const reg = document.getElementById('regionSelector').value;
             const currentFiltered = (reg === "ALL") ? masterData : masterData.filter(d => d.Region === reg);
             const unmatched = currentFiltered.filter(d => d.Location.startsWith("Review:"));
             const freq = countOcc(unmatched, 'RawLoc');
-            
-            let csv = "Raw Entry,Ticket Count,Target Site Name\n";
+            let csv = "Raw Entry,Ticket Count,Target Mapping\n";
             Object.entries(freq).forEach(row => { csv += `"${row[0]}",${row[1]},\n`; });
             const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'Review_List_' + reg + '.csv');
-            a.click();
+            const a = document.createElement('a'); a.setAttribute('href', URL.createObjectURL(blob)); a.setAttribute('download', 'Review_Required_' + reg + '.csv'); a.click();
         }
 
         function parseCSV(file) { return new Promise(resolve => Papa.parse(file, { header: true, skipEmptyLines: true, complete: r => resolve(r.data) })); }
         function setStatus(msg) { document.getElementById('systemStatus').innerText = msg; }
-        function countOcc(arr, k) { const c = {}; arr.forEach(i => { let v = i[k] || "N/A"; if(!["N/A","8888","Unknown"].includes(v)) c[v] = (c[v] || 0) + 1; }); return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1])); }
-        function draw(id, type, labels, datasets, isH) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id), { type, data: { labels, datasets }, options: { maintainAspectRatio: false, indexAxis: isH ? 'y' : 'x', plugins: { legend: { display: (type==='line') } } } }); }
+        function countOcc(arr, k) { const c = {}; arr.forEach(i => { let v = i[k] || "Other"; if(!["N/A","8888","Unknown","Other"].includes(v)) c[v] = (c[v] || 0) + 1; }); return Object.fromEntries(Object.entries(c).sort((a,b) => b[1]-a[1])); }
+        function draw(id, type, labels, datasets, isH) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id), { type: type, data: { labels, datasets }, options: { maintainAspectRatio: false, indexAxis: isH ? 'y' : 'x', plugins: { legend: { display: (type==='line') } } } }); }
     </script>
 </body>
 </html>
