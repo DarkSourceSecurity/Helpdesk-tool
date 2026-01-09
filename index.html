@@ -13,7 +13,7 @@
         <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="flex-1">
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight uppercase italic text-blue-900">Helpdesk Intel</h1>
-                <p id="systemStatus" class="text-blue-600 font-bold uppercase text-[10px] tracking-widest">Reverted to Stable Deep-Dive Logic</p>
+                <p id="systemStatus" class="text-blue-600 font-bold uppercase text-[10px] tracking-widest">Keyword Grouping Active (Amsterdam, Berlin, London, etc.)</p>
             </div>
             
             <div id="filterArea" class="hidden flex flex-wrap items-center gap-4 bg-white p-4 rounded-3xl shadow-sm border border-slate-200">
@@ -42,7 +42,7 @@
         </div>
 
         <button onclick="processData()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-lg shadow-xl hover:bg-blue-700 transition-all mb-12 transform hover:-translate-y-1 active:translate-y-0 border-b-4 border-slate-700 active:border-b-0">
-            GENERATE MULTI-TIER ANALYSIS
+            GENERATE SMART-GROUPED ANALYSIS
         </button>
 
         <div id="dashboard" class="hidden space-y-8 pb-20">
@@ -60,14 +60,9 @@
                 <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">PRTG Infrastructure Alerts</h3><div class="h-80"><canvas id="chartPrtg"></canvas></div></div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Year-on-Year Performance</h3><div class="h-80"><canvas id="chartYoY"></canvas></div></div>
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Priority Breakdown</h3><div class="h-80"><canvas id="chartPri"></canvas></div></div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Engineer Performance</h3><div class="h-80"><canvas id="chartEng"></canvas></div></div>
-                <div class="bg-slate-900 p-8 rounded-3xl shadow-xl text-white flex flex-col items-center"><h3 class="text-xs font-bold uppercase mb-6 text-slate-500">Tech Keywords</h3><div id="keywordCloud" class="flex flex-wrap justify-center gap-2"></div></div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-20">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Engineer Performance</h3><div class="h-80"><canvas id="chartEng"></canvas></div></div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"><h3 class="text-xs font-bold uppercase mb-6 text-slate-400 text-center">Yearly Trends</h3><div class="h-80"><canvas id="chartYoY"></canvas></div></div>
             </div>
         </div>
     </div>
@@ -76,20 +71,41 @@
         let charts = {};
         let masterData = [];
 
+        // --- GROUPING KEYWORDS ---
+        // If these words appear anywhere in the raw text, they will be grouped.
+        const siteGroups = [
+            "Amsterdam", "Berlin", "London", "Dublin", "Paris", "Munich", 
+            "Chicago", "Singapore", "Sydney", "Malaysia", "Dodington", 
+            "Malmesbury", "Tokyo", "Milan", "New York"
+        ];
+
+        function tidyLocation(raw) {
+            if (!raw) return "Unknown Site";
+            const text = raw.toString().trim();
+            const upperText = text.toUpperCase();
+
+            // Sniff for keywords
+            for (let site of siteGroups) {
+                if (upperText.includes(site.toUpperCase())) {
+                    return site; // Found a match, group it!
+                }
+            }
+
+            // If no keyword found, keep the original text so we don't lose information
+            return text;
+        }
+
         async function processData() {
             try {
                 const curF = document.getElementById('currentFile').files[0];
                 const arcF = document.getElementById('archiveFile').files[0];
                 if (!curF || !arcF) return alert("Upload both databases.");
 
-                setStatus("Processing 35k+ records...");
+                setStatus("Grouping & Analyzing...");
                 const curRaw = await parseCSV(curF);
                 const arcRaw = await parseCSV(arcF);
 
-                const cleanCur = ingest(curRaw, 'Active');
-                const cleanArc = ingest(arcRaw, 'Archive');
-
-                masterData = [...cleanCur, ...cleanArc];
+                masterData = [...ingest(curRaw, 'Active'), ...ingest(arcRaw, 'Archive')];
                 
                 const regions = [...new Set(masterData.map(d => d.Region))].filter(Boolean).sort();
                 const sel = document.getElementById('regionSelector');
@@ -103,7 +119,7 @@
                 document.getElementById('dashboard').classList.remove('hidden');
                 
                 updateLocationList();
-                setStatus("Drill-down Ready");
+                setStatus("Ready");
             } catch (err) {
                 console.error(err);
                 setStatus("Error: Column Not Found");
@@ -130,7 +146,7 @@
                 sys: find(['system', 'type', 'category']),
                 date: find(['date', 'created']),
                 reg: find(['region', 'site', 'area']),
-                loc: find(['location', 'country', 'city', 'subsite']),
+                loc: find(['location', 'country', 'city']),
                 pri: find(['priority', 'rating']),
                 eng: find(['assigned', 'owner', 'engineer']),
                 stat: find(['status', 'state']),
@@ -144,16 +160,13 @@
                 if (pts.length >= 3) {
                     const y = pts[2].split(' ')[0], m = parseInt(pts[1]) - 1, d = parseInt(pts[0]);
                     const dObj = new Date(y, m, d);
-                    if (!isNaN(dObj.getTime())) { 
-                        yr = dObj.getFullYear().toString(); 
-                        q = "Q" + (Math.floor(dObj.getMonth() / 3) + 1); 
-                    }
+                    if (!isNaN(dObj.getTime())) { yr = dObj.getFullYear().toString(); q = "Q" + (Math.floor(dObj.getMonth() / 3) + 1); }
                 }
 
                 return {
                     ID: r[cols.id], Source: source,
                     Region: (r[cols.reg] || "Other").toString().trim(),
-                    Location: (r[cols.loc] || "Unknown Site").toString().trim(),
+                    Location: tidyLocation(r[cols.loc]), // <--- SMART GROUPING HERE
                     System: sysRaw.replace(/[\[\]"]/g, '').trim(),
                     isPRTG: sysRaw.toUpperCase().includes("PRTG"),
                     Priority: (r[cols.pri] || "P3").toString().trim(),
@@ -171,7 +184,7 @@
             const subData = (selectedReg === "ALL") ? masterData : masterData.filter(d => d.Region === selectedReg);
             const locations = [...new Set(subData.map(d => d.Location))].filter(Boolean).sort();
             
-            locSelector.innerHTML = '<option value="ALL">All Locations in ' + (selectedReg === "ALL" ? "Global" : selectedReg) + '</option>';
+            locSelector.innerHTML = '<option value="ALL">All Sites in ' + (selectedReg === "ALL" ? "Global" : selectedReg) + '</option>';
             locations.forEach(l => {
                 const o = document.createElement('option');
                 o.value = l; o.innerText = l;
